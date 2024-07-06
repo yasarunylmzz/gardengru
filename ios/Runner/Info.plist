@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Kameraya erişim gerekiyor.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Mikrofona erişim gerekiyor.</string>
 </dict>
 </plist>
