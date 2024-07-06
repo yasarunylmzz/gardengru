@@ -56,34 +56,42 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     if (_error != null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Kamera')),
         body: Center(child: Text(_error!)),
       );
     }
 
     if (!_isCameraInitialized) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Kamera')),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Kamera')),
-      body: Column(
+      body: Stack(
         children: [
-          AspectRatio(
-            aspectRatio: _controller!.value.aspectRatio,
-            child: CameraPreview(_controller!),
+          Positioned.fill(
+            child: AspectRatio(
+              aspectRatio: _controller!.value.aspectRatio,
+              child: CameraPreview(_controller!),
+            ),
           ),
-          ElevatedButton(
-            onPressed: () async {
-              if (_controller != null && _controller!.value.isInitialized) {
-                final image = await _controller!.takePicture();
-                // Yakalanan resmi işleyin (örneğin, kaydedin veya gösterin)
-              }
-            },
-            child: const Text('Çek'),
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  if (_controller != null && _controller!.value.isInitialized) {
+                    final image = await _controller!.takePicture();
+                    // Yakalanan resmi işleyin (örneğin, kaydedin veya gösterin)
+                    //TODO! resim gemini api 'a gönderilip işlenecek location bilgisi de gönderilecek 
+                    //gelen veri ?
+                  }
+                },
+                child: const Text('Çek'),
+              ),
+            ),
           ),
         ],
       ),
