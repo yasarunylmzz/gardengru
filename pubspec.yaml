@@ -44,6 +44,7 @@ dependencies:
   external_path: ^1.0.3
   media_scanner: ^2.1.0
   google_generative_ai: ^0.4.3
+  firebase_core: ^3.1.1
 
 dev_dependencies:
   flutter_test:
