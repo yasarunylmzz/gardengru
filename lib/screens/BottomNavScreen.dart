@@ -13,7 +13,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   int currentPageIndex = 0;
 
   final List<Widget> _pages = <Widget>[
-    HomeScreen(),
+    const HomeScreen(),
     PlaceholderWidget(), // Kameranın yerini Placeholder ile dolduruyoruz
   ];
 
@@ -58,7 +58,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
 class PlaceholderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text('Bu ekran şu anda boş.'),
     );
   }

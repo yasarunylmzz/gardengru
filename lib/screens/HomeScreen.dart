@@ -45,27 +45,32 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.all(
-                          Radius.circular(20)), // Yuvarlak köşe yarıçapı
-                      child: Image(
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.fill,
-                        image: NetworkImage(
-                            'https://images.theconversation.com/files/275002/original/file-20190516-69195-1yg53ff.jpg?ixlib=rb-4.1.0&q=20&auto=format&w=320&fit=clip&dpr=2&usm=12&cs=strip'),
-                      ),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        Text(
-                          'Arenosols',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ClipRRect(
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(20)), // Yuvarlak köşe yarıçapı
+                          child: Image(
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.fill,
+                            image: NetworkImage(
+                                'https://images.theconversation.com/files/275002/original/file-20190516-69195-1yg53ff.jpg?ixlib=rb-4.1.0&q=20&auto=format&w=320&fit=clip&dpr=2&usm=12&cs=strip'),
+                          ),
                         ),
-                        Text('68%'),
+                        const SizedBox(width: 12),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Arenosols',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            Text('68%'),
+                          ],
+                        ),
                       ],
                     ),
                     Icon(

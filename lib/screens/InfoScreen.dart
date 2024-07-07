@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gardengru/widgets/buildSoilInfo.dart';
 
 void main() {
   runApp(InfoScreen());
@@ -49,43 +50,57 @@ class InfoScreen extends StatelessWidget {
                     'From Wikipedia, the free encyclopedia\n\nPapaver somniferum, commonly known as the opium poppy or breadseed poppy, is a species of flowering plant in the family Papaveraceae. It is the species of plant from which both opium and poppy seeds are derived.',
                     style: TextStyle(fontSize: 16),
                   ),
+                  const Divider(),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Column(
                         children: [
-                          _buildPlantInfo(
-                              'Drainage',
-                              'Well-drained',
-                              Icon(Icons.water_damage),
-                              Colors.green,
-                              Colors.black),
+                          buildSoilInfo(
+                              context: context,
+                              title: 'Drainage',
+                              value: 'Well-drained',
+                              icon: const Icon(
+                                Icons.water_damage,
+                                color: Color(0xff4B8364),
+                              ),
+                              bgColor: Colors.lightGreen.shade100,
+                              textColor: Colors.green),
                           const SizedBox(height: 16),
-                          _buildPlantInfo(
-                              'Nutrients',
-                              'Low',
-                              Icon(Icons.eco_outlined),
-                              Colors.red,
-                              Colors.black),
+                          buildSoilInfo(
+                              context: context,
+                              title: 'Nutrients',
+                              value: 'Low',
+                              icon: const Icon(Icons.eco_outlined,
+                                  color: Color(0XFF7C95E4)),
+                              bgColor: const Color(0xFFE6EAFA),
+                              textColor: const Color(0xff5676DC)),
                         ],
                       ),
                       Column(
                         children: [
-                          _buildPlantInfo(
-                              'Texture',
-                              'Sandy',
-                              Icon(Icons.texture_outlined),
-                              Colors.red,
-                              Colors.black),
+                          buildSoilInfo(
+                              context: context,
+                              title: 'Texture',
+                              value: 'Sandy',
+                              icon: const Icon(
+                                Icons.texture_outlined,
+                                color: Color(0xffE6B44C),
+                              ),
+                              bgColor: const Color(0xffFCF1E3),
+                              textColor: const Color(0xffEAC069)),
                           const SizedBox(height: 16),
-                          _buildPlantInfo(
-                            'Color',
-                            'Light Brown',
-                            Icon(Icons.color_lens_outlined),
-                            Colors.brown,
-                            Colors.black,
-                          ),
+                          buildSoilInfo(
+                              context: context,
+                              title: 'Color',
+                              value: 'Light Brown',
+                              icon: const Icon(
+                                Icons.color_lens_outlined,
+                                color: Color(0xffA559D9),
+                              ),
+                              bgColor: const Color(0xffF8E8F8),
+                              textColor: const Color(0xffC390E6)),
                         ],
                       ),
                     ],
@@ -95,56 +110,6 @@ class InfoScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildPlantInfo(
-      String title, String value, Icon icon, Color bgColor, Color textColor) {
-    return Container(
-      padding: const EdgeInsets.all(8.0), // Adding padding for better spacing
-      decoration: BoxDecoration(
-        color: Colors.white, // Background color for the container
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            width: 45,
-            height: 45,
-            decoration: BoxDecoration(
-              color: bgColor, // Background color for the icon container
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Center(
-              child: icon, // Center the icon within the container
-            ),
-          ),
-          const SizedBox(height: 8), // Add spacing between icon and text
-          Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: textColor, // Text color
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: TextStyle(
-              color: Colors.black, // Default text color for value
-            ),
-          ),
-        ],
       ),
     );
   }

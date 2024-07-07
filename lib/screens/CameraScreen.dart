@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:gardengru/services/gemini_api_service.dart';
@@ -19,7 +20,6 @@ class _CameraScreenState extends State<CameraScreen> {
   bool _isCameraInitialized = false;
   String? _error;
   late GeminiApiService _geminiApiService;
-  File? _capturedImage;
   LocationService locationService = LocationService();
   late LocationData locationData;
   final ImagePicker _picker = ImagePicker();
@@ -85,9 +85,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
     if (image != null) {
       final File imageFile = File(image.path);
-      setState(() {
-        _capturedImage = imageFile;
-      });
+      setState(() {});
 
       // Resmi işledikten sonra API'ye gönderin
       try {
@@ -123,8 +121,8 @@ class _CameraScreenState extends State<CameraScreen> {
     }
 
     if (!_isCameraInitialized) {
-      return Scaffold(
-        body: const Center(child: CircularProgressIndicator()),
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 
@@ -144,7 +142,7 @@ class _CameraScreenState extends State<CameraScreen> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
             ),
           ),
           Positioned(
@@ -160,9 +158,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         _controller!.value.isInitialized) {
                       final image = await _controller!.takePicture();
                       final imageFile = File(image.path);
-                      setState(() {
-                        _capturedImage = imageFile;
-                      });
+                      setState(() {});
                       // Resmi işledikten sonra API'ye gönderin
                       try {
                         locationData =
