@@ -30,22 +30,13 @@ class InfoScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Papaver Somniferum',
+                    'Arenosol Soil',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Wrap(
-                    spacing: 8,
-                    children: [
-                      Chip(label: Text('Indoor')),
-                      Chip(label: Text('Pet friendly')),
-                      Chip(label: Text('Papaveraceae')),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
                   const Text(
                     'Description',
                     style: TextStyle(
@@ -60,22 +51,44 @@ class InfoScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _buildPlantInfo('Height', 'Small'),
-                      _buildPlantInfo('Water', '333ml'),
-                      _buildPlantInfo('Light', 'Normal'),
-                      _buildPlantInfo('Humidity', '56%'),
+                      Column(
+                        children: [
+                          _buildPlantInfo(
+                              'Drainage',
+                              'Well-drained',
+                              Icon(Icons.water_damage),
+                              Colors.green,
+                              Colors.black),
+                          const SizedBox(height: 16),
+                          _buildPlantInfo(
+                              'Nutrients',
+                              'Low',
+                              Icon(Icons.eco_outlined),
+                              Colors.red,
+                              Colors.black),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          _buildPlantInfo(
+                              'Texture',
+                              'Sandy',
+                              Icon(Icons.texture_outlined),
+                              Colors.red,
+                              Colors.black),
+                          const SizedBox(height: 16),
+                          _buildPlantInfo(
+                            'Color',
+                            'Light Brown',
+                            Icon(Icons.color_lens_outlined),
+                            Colors.brown,
+                            Colors.black,
+                          ),
+                        ],
+                      ),
                     ],
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('Save this plant'),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      textStyle: const TextStyle(fontSize: 18),
-                    ),
                   ),
                 ],
               ),
@@ -86,16 +99,53 @@ class InfoScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPlantInfo(String title, String value) {
-    return Column(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 4),
-        Text(value),
-      ],
+  Widget _buildPlantInfo(
+      String title, String value, Icon icon, Color bgColor, Color textColor) {
+    return Container(
+      padding: const EdgeInsets.all(8.0), // Adding padding for better spacing
+      decoration: BoxDecoration(
+        color: Colors.white, // Background color for the container
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(
+              color: bgColor, // Background color for the icon container
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: icon, // Center the icon within the container
+            ),
+          ),
+          const SizedBox(height: 8), // Add spacing between icon and text
+          Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: textColor, // Text color
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              color: Colors.black, // Default text color for value
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
