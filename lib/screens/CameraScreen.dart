@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:gardengru/services/gemini_api_service.dart';
 import 'dart:io';
+import 'package:location/location.dart';
+
+import 'package:gardengru/services/location_services.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -18,6 +21,8 @@ class _CameraScreenState extends State<CameraScreen> {
   String? _error;
   late GeminiApiService _geminiApiService;
   File? _capturedImage;
+  LocationService locationService = LocationService();
+  late LocationData locationData;
 
   @override
   void initState() {
@@ -120,7 +125,15 @@ class _CameraScreenState extends State<CameraScreen> {
                       //uygulama diline göre prompt seçilmeli 
 
                       //prompt toprağa benzeyen her şeye bi cevap uydurmaya ikna edilmeli vs
-                      final prompt = "Bu fotoğraf bir toprak resmi ise türünü tahmin ederek en iyi hangi bitkilerin yetişeceğini açıkla. Eğer değilse nazikçe toprak fotoğrafı iste.";
+                 
+                      locationData = await locationService.getCurrentLocation();
+                      
+                      
+                      
+                      final prompt = "Bu fotoğraf bir toprak resmi ise türünü tahmin ederek en iyi hangi bitkilerin yetişeceğini açıkla. Aynı zamanda bu fotoğraf sırasıyla latitude ve longitude bilgileri " + 
+                                                                        locationData.latitude.toString() + " " +
+                                                                        locationData.longitude.toString() + 
+                                                                        "olan bir konuma ait. Fotoğraf toprak fotoğrafı değil ise bunu belirt ve sadece lokasyona dayalı bilgi ver. Eğer fotoğraf ve lokasyon birlikte işine yarıyorsa bunu da belirterek cevap ver. Ve lokasyonu da cevabına ekle";
                       final response = await _geminiApiService.generateContentWithImages(prompt, [imageFile]);
                       print('API Response: $response');
                       _showResponseDialog(response);
@@ -138,4 +151,5 @@ class _CameraScreenState extends State<CameraScreen> {
       ),
     );
   }
+  
 }

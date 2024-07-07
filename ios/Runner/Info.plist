@@ -49,5 +49,9 @@
 	<string>Kameraya erişim gerekiyor.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Mikrofona erişim gerekiyor.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Needs location info more accurate results</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Needs location info more accurate results</string>
 </dict>
 </plist>
