@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:gardengru/widgets/buildSoilInfo.dart';
 
 void main() {
-  runApp(InfoScreen());
+  runApp(const InfoScreen());
 }
 
 class InfoScreen extends StatelessWidget {
+  const InfoScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

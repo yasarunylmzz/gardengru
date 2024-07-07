@@ -30,12 +30,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: ListView(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         children: [
           InkWell(
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => InfoScreen()));
+                  MaterialPageRoute(builder: (context) => const InfoScreen()));
             },
             child: Container(
               height: 75,
