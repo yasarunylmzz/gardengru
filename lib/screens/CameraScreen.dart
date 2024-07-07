@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:gardengru/services/gemini_api_service.dart';
+import 'dart:io';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -9,15 +11,19 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
+
   CameraController? _controller;
   List<CameraDescription>? _cameras;
   bool _isCameraInitialized = false;
   String? _error;
+  late GeminiApiService _geminiApiService;
+  File? _capturedImage;
 
   @override
   void initState() {
     super.initState();
     _initializeCamera();
+    _geminiApiService = GeminiApiService();
   }
 
   Future<void> _initializeCamera() async {
@@ -44,6 +50,25 @@ class _CameraScreenState extends State<CameraScreen> {
         _error = 'Camera initialization error: $e';
       });
     }
+  }
+    void _showResponseDialog(String response) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('API Response'),
+          content: Text(response),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -81,12 +106,28 @@ class _CameraScreenState extends State<CameraScreen> {
             right: 0,
             child: Center(
               child: ElevatedButton(
-                onPressed: () async {
+               onPressed: () async {
                   if (_controller != null && _controller!.value.isInitialized) {
                     final image = await _controller!.takePicture();
-                    // Yakalanan resmi işleyin (örneğin, kaydedin veya gösterin)
-                    //TODO! resim gemini api 'a gönderilip işlenecek location bilgisi de gönderilecek 
-                    //gelen veri ?
+                    final imageFile = File(image.path);
+                    setState(() {
+                      _capturedImage = imageFile;
+                    });
+                    // Resmi işledikten sonra API'ye gönderin
+                    try {
+                      //todo: response bir ekran haline getirilmeli
+                      //todo: lokasyon bilgisi gönderilmeli ve promt diller için ayrı ayrı dizi olmalı
+                      //uygulama diline göre prompt seçilmeli 
+
+                      //prompt toprağa benzeyen her şeye bi cevap uydurmaya ikna edilmeli vs
+                      final prompt = "Bu fotoğraf bir toprak resmi ise türünü tahmin ederek en iyi hangi bitkilerin yetişeceğini açıkla. Eğer değilse nazikçe toprak fotoğrafı iste.";
+                      final response = await _geminiApiService.generateContentWithImages(prompt, [imageFile]);
+                      print('API Response: $response');
+                      _showResponseDialog(response);
+                      // Gelen veriyi işleyin
+                    } catch (e) {
+                      print('Error: $e');
+                    }
                   }
                 },
                 child: const Text('Çek'),
