@@ -1,4 +1,7 @@
 // ignore: file_names
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:gardengru/services/gemini_api_service.dart';
@@ -9,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
+
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
@@ -23,6 +27,7 @@ class _CameraScreenState extends State<CameraScreen> {
   LocationService locationService = LocationService();
   late LocationData locationData;
   final ImagePicker _picker = ImagePicker();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -89,6 +94,8 @@ class _CameraScreenState extends State<CameraScreen> {
 
       // Resmi işledikten sonra API'ye gönderin
       try {
+       
+
         locationData = await locationService.getCurrentLocation();
         final prompt =
             "Bu fotoğraf bir toprak resmi ise türünü tahmin ederek en iyi hangi bitkilerin yetişeceğini açıkla. Aynı zamanda bu fotoğraf sırasıyla latitude ve longitude bilgileri " +
@@ -99,6 +106,7 @@ class _CameraScreenState extends State<CameraScreen> {
         final response = await _geminiApiService
             .generateContentWithImages(prompt, [imageFile]);
         print('API Response: $response');
+
         _showResponseDialog(response);
       } catch (e) {
         print('Error: $e');
