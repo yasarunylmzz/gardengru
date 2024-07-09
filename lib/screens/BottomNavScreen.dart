@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gardengru/screens/CameraScreen.dart';
 import 'package:gardengru/screens/HomeScreen.dart';
+import 'package:gardengru/screens/TestScreen.dart';
 
 class BottomNavScreen extends StatefulWidget {
   const BottomNavScreen({super.key});
@@ -18,12 +19,20 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   ];
 
   void _onItemTapped(int index) {
-    if (index == 1) {
+    if (index == 2) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const CameraScreen()),
       );
-    } else {
+      
+    }
+    else if(index == 1){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => TestScreen())
+      );
+    }
+    else {
       setState(() {
         currentPageIndex = index;
       });
@@ -44,6 +53,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             icon: Icon(Icons.home_outlined),
             label: 'Ana Sayfa',
           ),
+          NavigationDestination(icon : Icon(Icons.temple_buddhist_sharp), label: 'testscreen'),
           NavigationDestination(
             selectedIcon: Icon(Icons.camera_alt_rounded),
             icon: Icon(Icons.camera_alt_outlined),
