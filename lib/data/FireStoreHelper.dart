@@ -1,8 +1,9 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class fsConnection{
-    final FirebaseFirestore _database = FirebaseFirestore.instance;
+class FireStoreHelper{
+
+  FirebaseFirestore _database = FirebaseFirestore.instance;
 
     Stream<List<T>> getDocuments<T>(
         String collectionPath,
