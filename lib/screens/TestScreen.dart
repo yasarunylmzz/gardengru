@@ -1,13 +1,12 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:gardengru/data/FireStoreHelper.dart';
-import 'package:gardengru/data/dataModels/AuthModel.dart';
 import 'package:gardengru/data/FireBaseAuthHelper.dart';
-import 'package:gardengru/screens/SignInScreen.dart';
+import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gardengru/data/UserDataProvider.dart';
+import 'package:gardengru/data/dataModels/AuthModel.dart';
+import 'package:gardengru/data/dataModels/UserModel.dart';
+import 'package:gardengru/screens/HomeScreen.dart';
 
 class TestScreen extends StatefulWidget {
   TestScreen({super.key});
@@ -17,42 +16,44 @@ class TestScreen extends StatefulWidget {
 }
 
 class _TestScreenState extends State<TestScreen> {
-  final FireStoreHelper _fireStoreHelper = FireStoreHelper();
-  final FireBaseAuthHelper _authHelper = FireBaseAuthHelper();
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   String? _loginError;
+  var passwordVisible = true;
 
-  Future<void> _tryLogin() async {
+  Future<void> _tryLogin(BuildContext context) async {
     final email = _emailController.text;
     final password = _passwordController.text;
 
-    if (email.isEmpty || password.isEmpty) {
+    FireBaseAuthHelper fireBaseAuthHelper = FireBaseAuthHelper();
+    String? _uid = await fireBaseAuthHelper.tryLogin(email, password);
+
+    if (_uid == null) {
       setState(() {
-        _loginError = 'Email and password cannot be empty.';
+        _loginError = "Authentication failed. Please try again.";
       });
+      print("auth failed");
       return;
-    }
-
-    AuthModel authModel = AuthModel('', email, password);
-    AuthModel result = await _authHelper.tryLogin(authModel);
-
-    if (result.uid != null && result.uid!.isNotEmpty) {
-      setState(() {
-        _loginError = null;
-      });
-      print('User authenticated: UID: ${result.uid}, Email: ${result.mail}');
     } else {
-      setState(() {
-        _loginError =
-            'Authentication failed. Please check your email and password.';
-      });
+      // Init user model here
+      UserModel userModel = UserModel();
+      AuthModel authModel = AuthModel()
+        ..uid = _uid
+        ..mail = email
+        ..pass = password;
+
+      Provider.of<UserDataProvider>(context, listen: false).setAuthModel(authModel);
+      Provider.of<UserDataProvider>(context, listen: false).setUserModel(userModel);
+
+      print("auth success");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+      // Navigate to another screen or update the UI
     }
   }
-
-  var passwordVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +66,7 @@ class _TestScreenState extends State<TestScreen> {
             padding: EdgeInsets.symmetric(vertical: 24.0),
             child: Text(
               'Welcome Back!',
-              style: GoogleFonts.workSans(
-                  fontSize: 20, fontWeight: FontWeight.bold),
+              style: GoogleFonts.workSans(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
           Column(
@@ -121,7 +121,7 @@ class _TestScreenState extends State<TestScreen> {
                 ],
               ),
               ElevatedButton(
-                onPressed: _tryLogin,
+                onPressed: () => _tryLogin(context),
                 child: Text(
                   'Login',
                   style: GoogleFonts.workSans(
@@ -138,42 +138,14 @@ class _TestScreenState extends State<TestScreen> {
                   ),
                 ),
               ),
-
-              // if (_loginError != null)
-              //   Padding(
-              //     padding: const EdgeInsets.all(8.0),
-              //     child: Text(
-              //       _loginError!,
-              //       style: const TextStyle(color: Colors.red),
-              //     ),
-              //   ),
-              // Expanded(
-              //   child: StreamBuilder<List<String>>(
-              //     stream: _fireStoreHelper.getDocuments(
-              //       'data', // Buraya koleksiyon adınızı girin
-              //       (data, documentId) =>
-              //           documentId, // Sadece documentId'yi döndür
-              //     ),
-              //     builder: (context, snapshot) {
-              //       if (snapshot.hasError) {
-              //         return Center(child: Text('Error: ${snapshot.error}'));
-              //       }
-              //       if (snapshot.connectionState == ConnectionState.waiting) {
-              //         return const Center(child: CircularProgressIndicator());
-              //       }
-              //       final items = snapshot.data ?? [];
-              //       return ListView.builder(
-              //         itemCount: items.length,
-              //         itemBuilder: (context, index) {
-              //           return ListTile(
-              //             title: Text(items[index]), // Document ID'yi göster
-              //           );
-              //         },
-              //       );
-              //     },
-              //   ),
-              // ),
-
+              if (_loginError != null)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    _loginError!,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
               const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Row(
@@ -247,7 +219,7 @@ class _TestScreenState extends State<TestScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SignInScreen()));
+                              builder: (context) => TestScreen()));
                     },
                     child: Text(
                       'Sign Up',

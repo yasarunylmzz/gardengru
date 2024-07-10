@@ -6,22 +6,14 @@ import 'package:gardengru/data/FireStoreHelper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthHelper{
-  AuthModel? _AuthModel;
+
   FireBaseAuthHelper _FireBaseAuthHelper = FireBaseAuthHelper();
 
 
-  AuthHelper(this._AuthModel);
+  AuthHelper();
 
-  Future<bool>isAuthSucces(AuthModel _AuthModel) async{
-    _AuthModel = await _FireBaseAuthHelper.tryLogin(_AuthModel);
-    if(_AuthModel.uid != ''){
-      return true;
-
-    }
-    else{
-        return false;
-    }
-
+  Future<bool>isAuthSucces(String? mail, String? pass) async{
+    return (await _FireBaseAuthHelper.tryLogin(mail, pass)) != null;
   }
 
 

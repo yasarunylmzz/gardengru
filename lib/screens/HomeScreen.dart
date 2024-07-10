@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gardengru/screens/InfoScreen.dart';
+import 'package:provider/provider.dart';
+
+import '../data/UserDataProvider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -7,6 +10,11 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
+String getText(BuildContext context) {
+  var userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
+  return userDataProvider.userDataModel.authModel?.mail ?? 'No email';
+}
+
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
@@ -40,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               height: 75,
               color: Colors.white,
-              child: const Center(
+              child:  Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -63,8 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Arenosols',
+                            Text (getText(context),
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold),
                             ),

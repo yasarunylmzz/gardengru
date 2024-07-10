@@ -7,7 +7,8 @@ class AuthModel{
   String? mail;
   //TODO: IMPORTANT!!! NEEDS TO BE HASHED
   String? pass;
-  AuthModel(this.uid, this.mail,this.pass);
+  AuthModel();
+
 
 
 
