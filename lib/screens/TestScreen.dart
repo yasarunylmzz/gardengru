@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:gardengru/data/FireBaseAuthHelper.dart';
+import 'package:gardengru/screens/Register.dart';
+import 'package:gardengru/screens/SignInScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gardengru/data/UserDataProvider.dart';
@@ -219,7 +221,7 @@ class _TestScreenState extends State<TestScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => TestScreen()));
+                              builder: (context) => RegisterScreen()));
                     },
                     child: Text(
                       'Sign Up',
