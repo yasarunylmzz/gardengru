@@ -6,52 +6,17 @@ import 'package:flutter/widgets.dart';
 import 'package:gardengru/data/FireStoreHelper.dart';
 import 'package:gardengru/data/dataModels/AuthModel.dart';
 import 'package:gardengru/data/FireBaseAuthHelper.dart';
-import 'package:gardengru/screens/SignInScreen.dart';
+import 'package:gardengru/screens/TestScreen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class TestScreen extends StatefulWidget {
-  TestScreen({super.key});
+class SignInScreen extends StatefulWidget {
+  SignInScreen({super.key});
 
   @override
-  _TestScreenState createState() => _TestScreenState();
+  _SignInScreenState createState() => _SignInScreenState();
 }
 
-class _TestScreenState extends State<TestScreen> {
-  final FireStoreHelper _fireStoreHelper = FireStoreHelper();
-  final FireBaseAuthHelper _authHelper = FireBaseAuthHelper();
-
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  String? _loginError;
-
-  Future<void> _tryLogin() async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
-
-    if (email.isEmpty || password.isEmpty) {
-      setState(() {
-        _loginError = 'Email and password cannot be empty.';
-      });
-      return;
-    }
-
-    AuthModel authModel = AuthModel('', email, password);
-    AuthModel result = await _authHelper.tryLogin(authModel);
-
-    if (result.uid != null && result.uid!.isNotEmpty) {
-      setState(() {
-        _loginError = null;
-      });
-      print('User authenticated: UID: ${result.uid}, Email: ${result.mail}');
-    } else {
-      setState(() {
-        _loginError =
-            'Authentication failed. Please check your email and password.';
-      });
-    }
-  }
-
+class _SignInScreenState extends State<SignInScreen> {
   var passwordVisible = true;
 
   @override
@@ -76,7 +41,26 @@ class _TestScreenState extends State<TestScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: TextField(
-                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'First Name',
+                    prefixIcon: Icon(Icons.people_alt_outlined),
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Last Name',
+                    prefixIcon: Icon(Icons.people),
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: TextField(
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     prefixIcon: Icon(Icons.email_outlined),
@@ -87,7 +71,6 @@ class _TestScreenState extends State<TestScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: TextField(
-                  controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     prefixIcon: const Icon(Icons.lock_outlined),
@@ -104,26 +87,11 @@ class _TestScreenState extends State<TestScreen> {
                   obscureText: passwordVisible,
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Forgot Password?',
-                      style: GoogleFonts.workSans(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              SizedBox(height: 10),
               ElevatedButton(
-                onPressed: _tryLogin,
+                onPressed: () {},
                 child: Text(
-                  'Login',
+                  'Sign In',
                   style: GoogleFonts.workSans(
                     fontSize: 20,
                     color: Colors.white,
@@ -236,7 +204,7 @@ class _TestScreenState extends State<TestScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Don\'t have an account?',
+                    'You have an account?',
                     style: GoogleFonts.workSans(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
@@ -247,10 +215,10 @@ class _TestScreenState extends State<TestScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SignInScreen()));
+                              builder: (context) => TestScreen()));
                     },
                     child: Text(
-                      'Sign Up',
+                      'Log In',
                       style: GoogleFonts.workSans(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
