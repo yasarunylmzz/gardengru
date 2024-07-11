@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:gardengru/data/FireBaseAuthHelper.dart';
 import 'package:gardengru/screens/Register.dart';
-import 'package:gardengru/screens/SignInScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gardengru/data/UserDataProvider.dart';
@@ -45,8 +43,10 @@ class _TestScreenState extends State<TestScreen> {
         ..mail = email
         ..pass = password;
 
-      Provider.of<UserDataProvider>(context, listen: false).setAuthModel(authModel);
-      Provider.of<UserDataProvider>(context, listen: false).setUserModel(userModel);
+      Provider.of<UserDataProvider>(context, listen: false)
+          .setAuthModel(authModel);
+      Provider.of<UserDataProvider>(context, listen: false)
+          .setUserModel(userModel);
 
       print("auth success");
       Navigator.pushReplacement(
@@ -68,7 +68,8 @@ class _TestScreenState extends State<TestScreen> {
             padding: EdgeInsets.symmetric(vertical: 24.0),
             child: Text(
               'Welcome Back!',
-              style: GoogleFonts.workSans(fontSize: 20, fontWeight: FontWeight.bold),
+              style: GoogleFonts.workSans(
+                  fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
           Column(
@@ -219,9 +220,12 @@ class _TestScreenState extends State<TestScreen> {
                   TextButton(
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RegisterScreen()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RegisterScreen(),
+                          fullscreenDialog: false,
+                        ),
+                      );
                     },
                     child: Text(
                       'Sign Up',

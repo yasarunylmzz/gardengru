@@ -26,13 +26,11 @@ class UserDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateUserModel(String name, String surname, String gender, int age, String country) {
+  void updateUserModel(
+      String name, String surname, String gender, int age, String country) {
     _userDataModel.userModel = UserModel()
       ..Name = name
-      ..Surname = surname
-      ..Gender = gender
-      ..Age = age
-      ..Country = country;
+      ..Surname = surname;
     notifyListeners();
   }
 }
