@@ -10,17 +10,27 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-String getText(BuildContext context) {
-  var userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
-  return userDataProvider.userDataModel.authModel?.mail ?? 'No email';
-}
-
 
 class _HomeScreenState extends State<HomeScreen> {
+  String? userEmail;
+
+  @override
+  void initState() {
+    super.initState();
+    userEmail = getEmail(context);
+  }
+
+  String getEmail(BuildContext context) {
+    var userDataProvider =
+        Provider.of<UserDataProvider>(context, listen: false);
+    return userDataProvider.userDataModel.authModel?.mail ?? 'No email';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Align(
           alignment: Alignment.centerLeft,
           child: Text('My Soil'),
@@ -48,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               height: 75,
               color: Colors.white,
-              child:  Center(
+              child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -71,7 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text (getText(context),
+                            Text(
+                              userEmail ?? 'No email',
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold),
                             ),

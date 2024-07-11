@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:gardengru/data/FireBaseAuthHelper.dart';
+import 'package:gardengru/screens/BottomNavScreen.dart';
 import 'package:gardengru/screens/Register.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gardengru/data/UserDataProvider.dart';
 import 'package:gardengru/data/dataModels/AuthModel.dart';
 import 'package:gardengru/data/dataModels/UserModel.dart';
-import 'package:gardengru/screens/HomeScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TestScreen extends StatefulWidget {
-  TestScreen({super.key});
+  const TestScreen({super.key});
 
   @override
   _TestScreenState createState() => _TestScreenState();
@@ -48,10 +49,16 @@ class _TestScreenState extends State<TestScreen> {
       Provider.of<UserDataProvider>(context, listen: false)
           .setUserModel(userModel);
 
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+
       print("auth success");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(
+          builder: (context) => BottomNavScreen(),
+          fullscreenDialog: true,
+        ),
       );
       // Navigate to another screen or update the UI
     }

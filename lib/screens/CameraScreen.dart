@@ -13,7 +13,6 @@ import 'package:image_picker/image_picker.dart';
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
 
-
   @override
   State<CameraScreen> createState() => _CameraScreenState();
 }
@@ -94,8 +93,6 @@ class _CameraScreenState extends State<CameraScreen> {
 
       // Resmi işledikten sonra API'ye gönderin
       try {
-       
-
         locationData = await locationService.getCurrentLocation();
         final prompt =
             "Bu fotoğraf bir toprak resmi ise türünü tahmin ederek en iyi hangi bitkilerin yetişeceğini açıkla. Aynı zamanda bu fotoğraf sırasıyla latitude ve longitude bilgileri " +
@@ -154,7 +151,7 @@ class _CameraScreenState extends State<CameraScreen> {
             ),
           ),
           Positioned(
-            bottom: 20,
+            bottom: MediaQuery.of(context).size.width * 0.2,
             left: 0,
             right: 0,
             child: Row(

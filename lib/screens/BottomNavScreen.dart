@@ -1,7 +1,9 @@
+import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:gardengru/screens/CameraScreen.dart';
 import 'package:gardengru/screens/HomeScreen.dart';
-import 'package:gardengru/screens/TestScreen.dart';
+import 'package:gardengru/screens/ProfileScreen.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class BottomNavScreen extends StatefulWidget {
   const BottomNavScreen({super.key});
@@ -15,61 +17,38 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
 
   final List<Widget> _pages = <Widget>[
     const HomeScreen(),
-    PlaceholderWidget(), // Kameranın yerini Placeholder ile dolduruyoruz
+    const CameraScreen(),
+    const ProfileScreen(),
   ];
-
-  void _onItemTapped(int index) {
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const CameraScreen()),
-      );
-      
-    }
-    else if(index == 1){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => TestScreen())
-      );
-    }
-    else {
-      setState(() {
-        currentPageIndex = index;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: _pages[currentPageIndex],
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: _onItemTapped,
-        indicatorColor: Colors.amber,
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'Ana Sayfa',
+      bottomNavigationBar: FloatingNavbar(
+        width: MediaQuery.of(context).size.width * .9,
+        margin: EdgeInsets.only(bottom: 0),
+        iconSize: 24,
+        selectedItemColor: Colors.green,
+        currentIndex: currentPageIndex,
+        onTap: (index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        items: [
+          FloatingNavbarItem(
+            icon: Icons.home,
           ),
-          NavigationDestination(icon : Icon(Icons.temple_buddhist_sharp), label: 'testscreen'),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.camera_alt_rounded),
-            icon: Icon(Icons.camera_alt_outlined),
-            label: 'Kamera',
+          FloatingNavbarItem(
+            icon: Icons.camera_alt,
+          ),
+          FloatingNavbarItem(
+            icon: Icons.person,
           ),
         ],
       ),
-    );
-  }
-}
-
-class PlaceholderWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Bu ekran şu anda boş.'),
     );
   }
 }
