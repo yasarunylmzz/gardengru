@@ -20,10 +20,15 @@ class _HomeScreenState extends State<HomeScreen> {
     userEmail = getEmail(context);
   }
 
-  String getEmail(BuildContext context) {
+
+
+
+
+
+  String? getEmail(BuildContext context) {
     var userDataProvider =
         Provider.of<UserDataProvider>(context, listen: false);
-    return userDataProvider.userDataModel.authModel?.mail ?? 'No email';
+    return userDataProvider.userDataModel.userModel?.savedModels?[0].imagePath;
   }
 
   @override

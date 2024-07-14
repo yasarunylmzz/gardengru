@@ -4,6 +4,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 class GeminiApiService {
   late GenerativeModel _model;
 
+
   GeminiApiService() {
     //todo: api key enviroment değişkeni olmalıymış açık açık yazılmazmış
     // flutter run --dart vsvs hata verdiği için açıkça yazıldı
@@ -27,4 +28,11 @@ class GeminiApiService {
 
     return response.text??"Bir şeyler hatalı";
 }
+  Future<String> generateTitle(String text) async{
+    final prompt = 'Bu metin için başlık yarat ancak yalnızca bir başlık döndür. Döndürdüğün yanıt uygulamamda başlık olacak: ' + text ;
+    final responce = await
+                  _model.generateContent([Content.text(prompt)]);
+    return responce.text ?? ' ';
+  }
+
 }
