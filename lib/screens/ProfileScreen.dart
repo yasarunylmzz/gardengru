@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:gardengru/data/UserDataProvider.dart';
+import 'package:gardengru/data/dataModels/UserDataModel.dart';
+import 'package:gardengru/data/dataModels/UserModel.dart';
 import 'package:gardengru/widgets/ProfileSettings.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+String getNameAndSurnameForHeader(context) {
+  UserDataModel usr = Provider.of<UserDataProvider>(context, listen: true).userDataModel;
+  print("FINDME");
+  print(Provider.of<UserDataProvider>(context).userDataModel.userModel?.Name);
+
+  String name = usr.userModel?.Name ?? '';
+  String surname = usr.userModel?.Surname ?? '';
+  return name + ' ' + surname;
+}
+
+
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -12,17 +29,22 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
+
+
   TextEditingController _nameController =
-      TextEditingController(text: 'John Doe');
+  TextEditingController(text: 'John Doe');
   TextEditingController _emailController =
-      TextEditingController(text: 'john.doe@example.com');
+  TextEditingController(text: 'john.doe@example.com');
   TextEditingController _phoneController =
-      TextEditingController(text: '+1 234 567 8901');
+  TextEditingController(text: '+1 234 567 8901');
 
   bool _isEditing = false;
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -70,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'John Doe',
+                          getNameAndSurnameForHeader(context),
                           style: GoogleFonts.workSans(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -80,13 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(
                           height: 1,
                         ),
-                        Text(
-                          '@johndoe',
-                          style: GoogleFonts.workSans(
-                            fontSize: 12,
-                            color: Colors.white,
-                          ),
-                        ),
+
                       ],
                     ),
                   ],
@@ -110,11 +126,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(
                         height: 10,
-                      ),
-                      const ProfileSettings(
-                        name: 'Face Id / Touch Id',
-                        description: 'Enable biometric',
-                        icon: Icons.arrow_forward_ios,
                       ),
                       const SizedBox(
                         height: 10,

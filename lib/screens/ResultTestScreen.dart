@@ -11,19 +11,14 @@ import 'package:provider/provider.dart';
 import '../data/UserDataProvider.dart';
 import 'package:path_provider/path_provider.dart';
 
-Future<File> createTemporaryTextFile(String text) async {
-  final Directory tempDir = await getTemporaryDirectory();
-  final String tempPath = tempDir.path;
-  final File tempFile = File('$tempPath/tempfile.txt');
-  await tempFile.writeAsString(text);
-  return tempFile;
-}
-
-Future<bool> postSavedItemToDatabase(SavedModel savedModel, context) async {
+Future<bool> postSavedItemToDatabase(SavedModel savedModel, context,String title) async {
   StorageHelper storageHelper = StorageHelper();
   UserDataModel  user  = Provider.of<UserDataProvider>(context, listen: false).userDataModel;
-  if(await storageHelper.UploadSavedFilesToDatabase(user, savedModel.image!,
-      await createTemporaryTextFile(savedModel.text!))){
+  if(await storageHelper.UploadSavedFilesToDatabase(user,
+      savedModel.image!,
+      savedModel.text!, title)){
+    user.userModel!.savedModels!.add(savedModel);
+    Provider.of<UserDataProvider>(context, listen: false).setUserModel(user.userModel!);
     return true;
   }
   return false;
@@ -75,7 +70,7 @@ class ResultTestScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    savedModel.text ?? 'opps',
+                    savedModel.text!,
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -84,7 +79,7 @@ class ResultTestScreen extends StatelessWidget {
                   Center(
                       child: ElevatedButton(
                       onPressed: () {
-                    postSavedItemToDatabase(savedModel, context).then((result) {
+                    postSavedItemToDatabase(savedModel, context, title).then((result) {
                     ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                     content: Text(result

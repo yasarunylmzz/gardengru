@@ -6,9 +6,6 @@ import 'package:gardengru/screens/Register.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gardengru/data/UserDataProvider.dart';
-import 'package:gardengru/data/dataModels/AuthModel.dart';
-import 'package:gardengru/data/dataModels/UserModel.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class TestScreen extends StatefulWidget {
   const TestScreen({super.key});
@@ -28,27 +25,26 @@ class _TestScreenState extends State<TestScreen> {
     final email = _emailController.text;
     final password = _passwordController.text;
     UserDataModel? userDataModel =
-        await _fireBaseAuthHelper.InitUserDataModelForCurrentUser(email, password);
+        await _fireBaseAuthHelper.InitUserDataModelForCurrentUser(
+            email, password);
 
-    if(userDataModel==null)
-    {
+    if (userDataModel == null) {
       print("failed to login");
       return;
     }
-    Provider.of<UserDataProvider>(context, listen: false).setAuthModel(userDataModel.authModel!);
-    Provider.of<UserDataProvider>(context, listen: false).setUserModel(userDataModel.userModel!);
+    Provider.of<UserDataProvider>(context, listen: false)
+        .setAuthModel(userDataModel.authModel!);
+    Provider.of<UserDataProvider>(context, listen: false)
+        .setUserModel(userDataModel.userModel!);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BottomNavScreen(),
-          fullscreenDialog: true,
-        ),
-      );
-
-    }
-
-
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BottomNavScreen(),
+        fullscreenDialog: true,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

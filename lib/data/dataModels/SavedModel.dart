@@ -10,6 +10,20 @@ class SavedModel{
   String? text;
   File? image;
   SavedModel();
+
+  String? get getText => text;
+  set setText(String? value) {
+    text = value;
+  }
+
+  // Getter and Setter for image
+  File? get getImage => image;
+  set setImage(File? value) {
+    image = value;
+  }
+
+
+
   factory SavedModel.fromFirestore(Map<String, dynamic> firestore) {
     SavedModel savedModel = SavedModel()
       ..imagePath = firestore['imagePath']
@@ -26,5 +40,7 @@ class SavedModel{
 
     };
   }
+
+
 
 }
