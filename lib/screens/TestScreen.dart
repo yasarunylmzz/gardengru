@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gardengru/data/FireBaseAuthHelper.dart';
+import 'package:gardengru/data/dataModels/UserDataModel.dart';
 import 'package:gardengru/screens/BottomNavScreen.dart';
 import 'package:gardengru/screens/Register.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gardengru/data/UserDataProvider.dart';
-import 'package:gardengru/data/dataModels/AuthModel.dart';
-import 'package:gardengru/data/dataModels/UserModel.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class TestScreen extends StatefulWidget {
   const TestScreen({super.key});
@@ -19,49 +17,33 @@ class TestScreen extends StatefulWidget {
 class _TestScreenState extends State<TestScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+  FireBaseAuthHelper _fireBaseAuthHelper = FireBaseAuthHelper();
   String? _loginError;
   var passwordVisible = true;
 
-  Future<void> _tryLogin(BuildContext context) async {
+  Future<void> LoginAndNavigateToNextPage(BuildContext context) async {
     final email = _emailController.text;
     final password = _passwordController.text;
+    UserDataModel? userDataModel =
+        await _fireBaseAuthHelper.InitUserDataModelForCurrentUser(
+            email, password);
 
-    FireBaseAuthHelper fireBaseAuthHelper = FireBaseAuthHelper();
-    String? _uid = await fireBaseAuthHelper.tryLogin(email, password);
-
-    if (_uid == null) {
-      setState(() {
-        _loginError = "Authentication failed. Please try again.";
-      });
-      print("auth failed");
+    if (userDataModel == null) {
+      print("failed to login");
       return;
-    } else {
-      // Init user model here
-      UserModel userModel = UserModel();
-      AuthModel authModel = AuthModel()
-        ..uid = _uid
-        ..mail = email
-        ..pass = password;
-
-      Provider.of<UserDataProvider>(context, listen: false)
-          .setAuthModel(authModel);
-      Provider.of<UserDataProvider>(context, listen: false)
-          .setUserModel(userModel);
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', true);
-
-      print("auth success");
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BottomNavScreen(),
-          fullscreenDialog: true,
-        ),
-      );
-      // Navigate to another screen or update the UI
     }
+    Provider.of<UserDataProvider>(context, listen: false)
+        .setAuthModel(userDataModel.authModel!);
+    Provider.of<UserDataProvider>(context, listen: false)
+        .setUserModel(userDataModel.userModel!);
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BottomNavScreen(),
+        fullscreenDialog: true,
+      ),
+    );
   }
 
   @override
@@ -131,7 +113,7 @@ class _TestScreenState extends State<TestScreen> {
                 ],
               ),
               ElevatedButton(
-                onPressed: () => _tryLogin(context),
+                onPressed: () => LoginAndNavigateToNextPage(context),
                 child: Text(
                   'Login',
                   style: GoogleFonts.workSans(

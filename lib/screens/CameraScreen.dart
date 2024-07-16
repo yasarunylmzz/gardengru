@@ -1,20 +1,32 @@
 // ignore: file_names
+import 'dart:convert';
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/services.dart';
+import 'package:gardengru/data/UserDataProvider.dart';
+import 'package:gardengru/data/dataModels/SavedModel.dart';
+import 'package:gardengru/screens/ResultTestScreen.dart';
 import 'package:gardengru/services/gemini_api_service.dart';
 import 'dart:io';
 import 'package:location/location.dart';
 import 'package:gardengru/services/location_services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
+}
+Future<File> createTemporaryTextFile(String text) async {
+  final Directory tempDir = await getTemporaryDirectory();
+  final String tempPath = tempDir.path;
+  final File tempFile = File('$tempPath/tempfile.txt');
+  await tempFile.writeAsString(text);
+  return tempFile;
 }
 
 class _CameraScreenState extends State<CameraScreen> {
@@ -27,12 +39,27 @@ class _CameraScreenState extends State<CameraScreen> {
   late LocationData locationData;
   final ImagePicker _picker = ImagePicker();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  bool _isLoading = false;
+
 
   @override
   void initState() {
     super.initState();
     _initializeCamera();
     _geminiApiService = GeminiApiService();
+  }
+
+
+  Future<SavedModel> initSavedModelForResultScreen(File image) async {
+    locationData = await locationService.getCurrentLocation();
+
+    SavedModel savedModel = SavedModel();
+    savedModel.createdAt = Timestamp.now();
+    final response = await _geminiApiService.generateContentWithImages([image], locationData);
+
+    savedModel.image = image;
+    savedModel.text = response;
+    return savedModel;
   }
 
   Future<void> _initializeCamera() async {
@@ -61,24 +88,34 @@ class _CameraScreenState extends State<CameraScreen> {
     }
   }
 
-  void _showResponseDialog(String response) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('API Response'),
-          content: Text(response),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+  Future<void> navigateToResultScreenWithData(File img) async {
+    setState(() {
+      _isLoading = true; // Start loading
+    });
+
+    try {
+      SavedModel savedModel = await initSavedModelForResultScreen(img);
+      String title = await _geminiApiService.generateTitle(savedModel
+          .text!);
+      if (savedModel.text != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultTestScreen(
+
+              savedModel: savedModel,
+              title: title,
             ),
-          ],
+          ),
         );
-      },
-    );
+      }
+    } catch (e) {
+      print('Error: $e');
+    } finally {
+      setState(() {
+        _isLoading = false; // Stop loading
+      });
+    }
   }
 
   Future<void> _pickImageFromGallery() async {
@@ -90,21 +127,8 @@ class _CameraScreenState extends State<CameraScreen> {
     if (image != null) {
       final File imageFile = File(image.path);
       setState(() {});
-
-      // Resmi işledikten sonra API'ye gönderin
       try {
-        locationData = await locationService.getCurrentLocation();
-        final prompt =
-            "Bu fotoğraf bir toprak resmi ise türünü tahmin ederek en iyi hangi bitkilerin yetişeceğini açıkla. Aynı zamanda bu fotoğraf sırasıyla latitude ve longitude bilgileri " +
-                locationData.latitude.toString() +
-                " " +
-                locationData.longitude.toString() +
-                " olan bir konuma ait. Fotoğraf toprak fotoğrafı değil ise bunu belirt ve sadece lokasyona dayalı bilgi ver. Eğer fotoğraf ve lokasyon birlikte işine yarıyorsa bunu da belirterek cevap ver. Ve lokasyonu da cevabına ekle";
-        final response = await _geminiApiService
-            .generateContentWithImages(prompt, [imageFile]);
-        print('API Response: $response');
-
-        _showResponseDialog(response);
+        await navigateToResultScreenWithData(imageFile);
       } catch (e) {
         print('Error: $e');
       }
@@ -140,6 +164,10 @@ class _CameraScreenState extends State<CameraScreen> {
               child: CameraPreview(_controller!),
             ),
           ),
+          if (_isLoading)
+            Center(
+              child: CircularProgressIndicator(),
+            ),
           Positioned(
             top: 30,
             left: 15,
@@ -164,20 +192,8 @@ class _CameraScreenState extends State<CameraScreen> {
                       final image = await _controller!.takePicture();
                       final imageFile = File(image.path);
                       setState(() {});
-                      // Resmi işledikten sonra API'ye gönderin
                       try {
-                        locationData =
-                            await locationService.getCurrentLocation();
-                        final prompt =
-                            "Bu fotoğraf bir toprak resmi ise türünü tahmin ederek en iyi hangi bitkilerin yetişeceğini açıkla. Aynı zamanda bu fotoğraf sırasıyla latitude ve longitude bilgileri " +
-                                locationData.latitude.toString() +
-                                " " +
-                                locationData.longitude.toString() +
-                                " olan bir konuma ait. Fotoğraf toprak fotoğrafı değil ise bunu belirt ve sadece lokasyona dayalı bilgi ver. Eğer fotoğraf ve lokasyon birlikte işine yarıyorsa bunu da belirterek cevap ver. Ve lokasyonu da cevabına ekle";
-                        final response = await _geminiApiService
-                            .generateContentWithImages(prompt, [imageFile]);
-                        print('API Response: $response');
-                        _showResponseDialog(response);
+                        await navigateToResultScreenWithData(imageFile);
                       } catch (e) {
                         print('Error: $e');
                       }

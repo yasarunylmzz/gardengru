@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:location/location.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class GeminiApiService {
   late GenerativeModel _model;
@@ -14,7 +17,13 @@ class GeminiApiService {
     _model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
   }
 
- Future<String> generateContentWithImages(String prompt, List<File> images) async {
+ Future<String> generateContentWithImages(List<File> images, LocationData locationData) async {
+
+   final String res = await rootBundle.loadString('assets/prompt.json');
+   final data = await json.decode(res);
+
+
+    final prompt = data['InfoPrompt'] +  locationData.latitude.toString() + locationData.longitude.toString();
     final promptPart = TextPart(prompt);
     final imageParts = await Future.wait(images.map((image) async {
       final bytes = await image.readAsBytes();
@@ -27,4 +36,13 @@ class GeminiApiService {
 
     return response.text??"Bir şeyler hatalı";
 }
+  Future<String> generateTitle(String text) async{
+    final String res = await rootBundle.loadString('assets/prompt.json');
+    final data = await json.decode(res);
+    final prompt = data["TitlePrompt"] + text ;
+    final responce = await
+                  _model.generateContent([Content.text(prompt)]);
+    return responce.text ?? ' ';
+  }
+
 }

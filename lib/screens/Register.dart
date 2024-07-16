@@ -42,8 +42,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       userDataModel.userModel = UserModel()
         ..Name = _nameController.text
         ..Surname = _surnameController.text
-        //it is not safe
-        ..savedModel = SavedModel();
+        ..savedModels = <SavedModel>[];
+
       bool success = await _storeHelper.initNewUser(userDataModel);
       if (success) {
         Navigator.push(

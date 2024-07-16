@@ -39,6 +39,7 @@ dependencies:
   shared_preferences: ^2.0.6
   salomon_bottom_bar: ^3.3.2
   floating_bottom_navigation_bar: ^1.5.2
+  path_provider: ^2.0.9
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -74,9 +75,8 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-assets:
-  -assets/gardenguru-428622-87196455875a.json
-  -assets/gemini_api.json
+  assets:
+    - assets/prompt.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:
