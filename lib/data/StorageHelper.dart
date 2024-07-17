@@ -7,6 +7,7 @@ import 'package:gardengru/data/dataModels/SavedModel.dart';
 import 'package:gardengru/data/dataModels/UserDataModel.dart';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 
 
@@ -15,39 +16,60 @@ class StorageHelper{
   StorageHelper();
   final FireStoreHelper _fireStoreHelper = FireStoreHelper();
 
-  Future<bool> DeleteSavedItemFromStorageAndStore(UserDataModel user,
-      int savedModelIndex) async{
+
+  Future<bool> DeleteSavedItemFromStorageAndStore(UserDataModel user, int savedModelIndex) async {
     try {
-      if(user.userModel?.savedModels == null || user.userModel!.savedModels!.isEmpty){
-        print("cannot handle the empty path request");
+      if (user.userModel?.savedModels == null || user.userModel!.savedModels!.isEmpty) {
+        print("Cannot handle the empty path request");
         return false;
       }
 
-
       SavedModel savedModel = user.userModel!.savedModels![savedModelIndex];
-      final imageRef = FirebaseStorage.instance.ref().child('images/${savedModel.imagePath}');
-      final textRef = FirebaseStorage.instance.ref().child('texts/${savedModel.textPath}');
+      String imagePath = savedModel.imageFileName!;
+      String textPath = savedModel.textFileName!;
 
-      await imageRef.delete();
-      await textRef.delete();
+      FirebaseStorage _store = FirebaseStorage.instance;
+
+      // Print paths for debugging
+      print("Deleting image at path: $imagePath");
+      print("Deleting text at path: $textPath");
+
+      try {
+        await _store.ref(imagePath).delete();
+        print("Image file deleted successfully");
+      } catch (e) {
+        print("Error deleting image file: $e");
+      }
+
+      try {
+        await _store.ref(textPath).delete();
+        print("Text file deleted successfully");
+      } catch (e) {
+        print("Error deleting text file: $e");
+      }
 
       if (await _fireStoreHelper.deleteFileReferenceFromDatabase(user, savedModel.createdAt!)) {
+        print("File references deleted from database successfully");
         return true;
       } else {
+        print("Failed to delete file references from database");
         return false;
       }
     } catch (e) {
       print("Error deleting files from storage: $e");
       return false;
     }
-
   }
 
 
   Future<bool> UploadSavedFilesToDatabase(UserDataModel user, File image, String text, String title) async {
     try {
-      final imageRef = storageRef.child('images/${DateTime.now().toString()}');
-      final textRef = storageRef.child('texts/${DateTime.now().toString()}.json');
+      final prename = DateTime.now().toString();
+
+       final desiredFileName = prename.replaceAll(RegExp(r'\s+'), '');
+
+      final imageRef = storageRef.child('images/$desiredFileName');
+      final textRef = storageRef.child('texts/$desiredFileName.json');
 
       // Upload image file
       await imageRef.putFile(image);
@@ -81,7 +103,10 @@ class StorageHelper{
       if (await _fireStoreHelper.AddFileReferanceToDatabase(
           user,
           await imageRef.getDownloadURL(),
-          await textRef.getDownloadURL())) {
+          await textRef.getDownloadURL(),
+          'texts/$desiredFileName.json',
+          'images/$desiredFileName.jpeg'
+      )) {
         return true;
       } else {
         return false;

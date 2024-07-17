@@ -9,6 +9,7 @@ import 'dataModels/SavedModel.dart';
 class UserDataProvider with ChangeNotifier {
   UserDataModel _userDataModel = UserDataModel();
   UserDataModel get userDataModel => _userDataModel;
+  bool _ISLOGGED = false;
 
   void setAuthModel(AuthModel authModel) {
     _userDataModel.authModel = authModel;
@@ -27,10 +28,27 @@ class UserDataProvider with ChangeNotifier {
   }
 
   void updateUserModel(
-      String name, String surname, String gender, int age, String country) {
+      String name, String surname) {
     _userDataModel.userModel = UserModel()
       ..Name = name
       ..Surname = surname;
+    notifyListeners();
+  }
+
+  void updateUserDataModel(UserDataModel userDataModel) {
+    _userDataModel = userDataModel;
+    notifyListeners();
+  }
+
+
+
+
+  void login(){
+    _ISLOGGED = true;
+    notifyListeners();
+  }
+  void logout(){
+    _ISLOGGED = false;
     notifyListeners();
   }
 

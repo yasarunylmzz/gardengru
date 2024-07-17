@@ -37,6 +37,9 @@ class _TestScreenState extends State<TestScreen> {
     Provider.of<UserDataProvider>(context, listen: false)
         .setUserModel(userDataModel.userModel!);
 
+    Provider.of<UserDataProvider>(context, listen: false)
+        .login();
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

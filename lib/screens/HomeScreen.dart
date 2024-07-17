@@ -36,31 +36,31 @@ Future<Map<String, String>?> getJsonAsMapFromStorage(String url) async {
 class _HomeScreenState extends State<HomeScreen> {
   List<Map<String, String>?> jsonDataList = [];
 
-  @override
-  void initState() {
-    super.initState();
+ /* @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     fetchData();
-  }
+  }*/
 
-  void fetchData() async {
-    UserDataModel user = Provider.of<UserDataProvider>(context, listen: false).userDataModel;
+  void fetchData(UserDataModel user) async {
+    //UserDataModel user = Provider.of<UserDataProvider>(context, listen: true).userDataModel;
     if (user.userModel?.savedModels != null) {
+      List<Map<String, String>?> newDataList = [];
       for (var model in user.userModel!.savedModels!) {
         String? url = model.textPath;
         if (url != null) {
           Map<String, String>? data = await getJsonAsMapFromStorage(url);
-          setState(() {
-            jsonDataList.add(data);
-          });
+          newDataList.add(data);
         }
       }
+      setState(() {
+        jsonDataList = newDataList;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    UserDataModel user = Provider.of<UserDataProvider>(context, listen: false).userDataModel;
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -75,72 +75,82 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(8),
-        children: [
-          ...jsonDataList.asMap().entries.map((entry) {
-            int index = entry.key;
-            var data = entry.value;
-            var path = user.userModel?.savedModels?[index].imagePath;
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => InfoScreen(data: data, path: path, index: index,),
-                  ),
-                );
-              },
-              child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 8.0),
-                height: 75,
-                color: Colors.white,
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
+      body: Consumer<UserDataProvider>(
+        builder: (context, userDataProvider, child) {
+          if (jsonDataList.isEmpty) {
+            return const Center(
+              child: Text('No data available'),
+            );
+          }
+
+          return ListView(
+            padding: const EdgeInsets.all(8),
+            children: [
+              ...jsonDataList.asMap().entries.map((entry) {
+                int index = entry.key;
+                var data = entry.value;
+                var path = userDataProvider.userDataModel.userModel?.savedModels?[index].imagePath;
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => InfoScreen(data: data, path: path, index: index,),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    height: 75,
+                    color: Colors.white,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            child: Image(
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.fill,
-                              image: NetworkImage(
-                                  path ??
-                                      'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png'),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
                             children: [
-                              Text(
-                                data?['title'] ?? "Loading...",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ClipRRect(
+                                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                child: Image(
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.fill,
+                                  image: NetworkImage(
+                                    path ?? 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
+                                  ),
+                                ),
                               ),
-                              if (data != null)
-                                ...data.entries.where((e) => e.key == 'text').map((e) => Text(e.value.substring(0,30) + '...' )).toList()
-                              else
-                                Text('Loading...'),
+                              const SizedBox(width: 12),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    data?['title'] ?? "Loading...",
+                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                  if (data != null)
+                                    ...data.entries.where((e) => e.key == 'text').map((e) => Text(e.value.substring(0, 30) + '...')).toList()
+                                  else
+                                    const Text('Loading...'),
+                                ],
+                              ),
                             ],
+                          ),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Color(0xff011928),
                           ),
                         ],
                       ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        color: Color(0xff011928),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            );
-          }).toList(),
-        ],
+                );
+              }).toList(),
+            ],
+          );
+        },
       ),
     );
   }

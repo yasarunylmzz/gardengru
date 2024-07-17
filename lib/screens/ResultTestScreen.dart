@@ -13,12 +13,10 @@ import 'package:path_provider/path_provider.dart';
 
 Future<bool> postSavedItemToDatabase(SavedModel savedModel, context,String title) async {
   StorageHelper storageHelper = StorageHelper();
-  UserDataModel  user  = Provider.of<UserDataProvider>(context, listen: false).userDataModel;
-  if(await storageHelper.UploadSavedFilesToDatabase(user,
-      savedModel.image!,
-      savedModel.text!, title)){
+  UserDataModel user = Provider.of<UserDataProvider>(context, listen: false).userDataModel;
+  if(await storageHelper.UploadSavedFilesToDatabase(user, savedModel.image!, savedModel.text!, title)){
     user.userModel!.savedModels!.add(savedModel);
-    Provider.of<UserDataProvider>(context, listen: false).setUserModel(user.userModel!);
+    Provider.of<UserDataProvider>(context, listen: false).updateUserDataModel(user);
     return true;
   }
   return false;

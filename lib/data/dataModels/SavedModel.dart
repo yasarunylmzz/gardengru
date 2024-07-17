@@ -9,14 +9,26 @@ class SavedModel{
   Timestamp? createdAt;
   String? text;
   File? image;
+  String? textFileName;
+  String? imageFileName;
   SavedModel();
 
-  String? get getText => text;
+  get getImageFileName => imageFileName;
+  get getTextFileName => textFileName;
+  set setTextFileName(String? value) {
+    textFileName = value;
+  }
+  set setImageFileName(String? value) {
+    imageFileName = value;
+  }
+
+
+
   set setText(String? value) {
     text = value;
   }
 
-  // Getter and Setter for image
+  String? get getText => text;// Getter and Setter for image
   File? get getImage => image;
   set setImage(File? value) {
     image = value;
@@ -28,7 +40,10 @@ class SavedModel{
     SavedModel savedModel = SavedModel()
       ..imagePath = firestore['imagePath']
       ..textPath = firestore['textPath']
-      ..createdAt = firestore['savedAt'];
+      ..createdAt = firestore['savedAt']
+       ..textFileName = firestore['textFileName']
+      ..imageFileName = firestore['imageFileName'];
+
 
     return savedModel;
   }
@@ -37,6 +52,11 @@ class SavedModel{
       'imagePath': imagePath,
       'textPath': textPath,
       'savedAt': createdAt,
+      'textFileName': textFileName,
+      'imageFileName': imageFileName
+
+
+
 
     };
   }
