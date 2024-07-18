@@ -17,11 +17,13 @@ class TestScreen extends StatefulWidget {
 class _TestScreenState extends State<TestScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  FireBaseAuthHelper _fireBaseAuthHelper = FireBaseAuthHelper();
+  final FireBaseAuthHelper _fireBaseAuthHelper = FireBaseAuthHelper();
   String? _loginError;
   var passwordVisible = true;
 
-  Future<void> LoginAndNavigateToNextPage(BuildContext context) async {
+
+//login and navigate to next page function
+  Future<void> LoginAndNavigateToNextPage(context) async {
     final email = _emailController.text;
     final password = _passwordController.text;
     UserDataModel? userDataModel =
@@ -54,7 +56,7 @@ class _TestScreenState extends State<TestScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 24.0),
+            padding: const EdgeInsets.symmetric(vertical: 24.0),
             child: Text(
               'Welcome Back!',
               style: GoogleFonts.workSans(
@@ -114,19 +116,19 @@ class _TestScreenState extends State<TestScreen> {
               ),
               ElevatedButton(
                 onPressed: () => LoginAndNavigateToNextPage(context),
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 50),
+                  backgroundColor: const Color(0xff0098ff),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(80),
+                  ),
+                ),
                 child: Text(
                   'Login',
                   style: GoogleFonts.workSans(
                     fontSize: 20,
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 50),
-                  backgroundColor: const Color(0xff0098ff),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(80),
                   ),
                 ),
               ),
@@ -178,12 +180,12 @@ class _TestScreenState extends State<TestScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image(
+                        const Image(
                           image: NetworkImage(
                               'https://static-00.iconduck.com/assets.00/google-icon-2048x2048-pks9lbdv.png'),
                           width: 45,
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(
                           'Sign Up With Google',
                           style: GoogleFonts.workSans(
@@ -221,7 +223,7 @@ class _TestScreenState extends State<TestScreen> {
                       style: GoogleFonts.workSans(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xff0098ff),
+                        color: const Color(0xff0098ff),
                       ),
                     ),
                   ),

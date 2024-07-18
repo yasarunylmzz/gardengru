@@ -9,7 +9,14 @@ class SavedModel{
   Timestamp? createdAt;
   String? text;
   File? image;
+<<<<<<< Updated upstream
   SavedModel();
+=======
+  String? textFileName;
+  String? imageFileName;
+
+  SavedModel({this.imagePath, this.textPath});
+>>>>>>> Stashed changes
 
   String? get getText => text;
   set setText(String? value) {

@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:gardengru/data/dataModels/UserDataModel.dart';
+import 'package:gardengru/data/dataModels/UserModel.dart';
 import 'package:gardengru/screens/InfoScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import '../data/UserDataProvider.dart';
+import '../data/dataModels/SavedModel.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -34,8 +36,13 @@ Future<Map<String, String>?> getJsonAsMapFromStorage(String url) async {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Map<String, String>?> jsonDataList = [];
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
 
+<<<<<<< Updated upstream
   @override
   void initState() {
     super.initState();
@@ -51,6 +58,22 @@ class _HomeScreenState extends State<HomeScreen> {
           Map<String, String>? data = await getJsonAsMapFromStorage(url);
           setState(() {
             jsonDataList.add(data);
+=======
+  Future<void> _loadData() async {
+    var user = Provider.of<UserDataProvider>(context, listen: false).userDataModel.userModel;
+    if (user != null && user.savedModels != null) {
+      for (var model in user.savedModels!) {
+        String? url = model.textPath;
+        if (url != null) {
+          getJsonAsMapFromStorage(url).then((data) {
+            if (data != null) {
+              var newSavedModel = SavedModel(
+                textPath: model.textPath,
+                imagePath: model.imagePath,
+              );
+              Provider.of<UserDataProvider>(context, listen: false).addSavedModel(newSavedModel);
+            }
+>>>>>>> Stashed changes
           });
         }
       }
@@ -59,7 +82,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< Updated upstream
     UserDataModel user = Provider.of<UserDataProvider>(context, listen: false).userDataModel;
+=======
+    var userDataModel = Provider.of<UserDataProvider>(context).userDataModel;
+    var user = userDataModel.userModel;
+
+    if (user == null || user.savedModels == null) {
+      return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Align(
+            alignment: Alignment.centerLeft,
+            child: Text('Home'),
+          ),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.search),
+            ),
+          ],
+        ),
+        body: Center(
+          child: Text('No saved models'),
+        ),
+      );
+    }
+>>>>>>> Stashed changes
 
     return Scaffold(
       appBar: AppBar(
@@ -75,6 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+<<<<<<< Updated upstream
       body: ListView(
         padding: const EdgeInsets.all(8),
         children: [
@@ -141,6 +191,98 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           }).toList(),
         ],
+=======
+      body: Consumer<UserDataProvider>(
+        builder: (context, userDataProvider, child) {
+          var user = userDataProvider.userDataModel.userModel;
+          if (user == null || user.savedModels == null) {
+            return Center(child: Text('No saved models'));
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(8),
+            itemCount: user.savedModels!.length,
+            itemBuilder: (context, index) {
+              var model = user.savedModels![index];
+              var path = model.imagePath;
+              return FutureBuilder<Map<String, String>?>(
+                future: getJsonAsMapFromStorage(model.textPath ??" "),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return ListTile(
+                      title: Text('Loading...'),
+                    );
+                  }
+                  var data = snapshot.data;
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => InfoScreen(
+                            data: data,
+                            path: path,
+                            index: index,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8.0),
+                      height: 75,
+                      color: Colors.white,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                  child: Image(
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.fill,
+                                    image: NetworkImage(
+                                        path ?? 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png'),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      data?['title'] ?? "Loading...",
+                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                    if (data != null)
+                                      ...data.entries
+                                          .where((e) => e.key == 'text')
+                                          .map((e) => Text(e.value.substring(0, 30) + '...'))
+                                          .toList()
+                                    else
+                                      const Text('Loading...'),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const Icon(
+                              Icons.arrow_forward_ios,
+                              color: Color(0xff011928),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+>>>>>>> Stashed changes
       ),
     );
   }

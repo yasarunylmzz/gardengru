@@ -13,12 +13,19 @@ import 'package:path_provider/path_provider.dart';
 
 Future<bool> postSavedItemToDatabase(SavedModel savedModel, context,String title) async {
   StorageHelper storageHelper = StorageHelper();
+<<<<<<< Updated upstream
   UserDataModel  user  = Provider.of<UserDataProvider>(context, listen: false).userDataModel;
   if(await storageHelper.UploadSavedFilesToDatabase(user,
       savedModel.image!,
       savedModel.text!, title)){
     user.userModel!.savedModels!.add(savedModel);
     Provider.of<UserDataProvider>(context, listen: false).setUserModel(user.userModel!);
+=======
+  UserDataModel user = Provider.of<UserDataProvider>(context, listen: false).userDataModel;
+  if(await storageHelper.UploadSavedFilesToDatabase(user, savedModel.image!, savedModel.text!, title)){
+   // user.userModel!.savedModels!.add(savedModel);
+    Provider.of<UserDataProvider>(context, listen: false).addSavedModel(savedModel);
+>>>>>>> Stashed changes
     return true;
   }
   return false;
