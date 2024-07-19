@@ -11,10 +11,15 @@ class SavedModel{
   File? image;
   String? textFileName;
   String? imageFileName;
-  SavedModel();
+  String? textFileName;
+  String? imageFileName;
+
+  SavedModel({this.imagePath, this.textPath});
+
 
   get getImageFileName => imageFileName;
   get getTextFileName => textFileName;
+  
   set setTextFileName(String? value) {
     textFileName = value;
   }

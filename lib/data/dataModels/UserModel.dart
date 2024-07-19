@@ -6,7 +6,11 @@ class UserModel {
   String? Surname;
   List<SavedModel>? savedModels;
 
+
+
   UserModel({this.Name, this.Surname, this.savedModels});
+
+
 
   factory UserModel.fromFirestore(Map<String, dynamic> firestore) {
     return UserModel(
@@ -20,7 +24,6 @@ class UserModel {
     return {
       'Name': Name,
       'Surname': Surname,
-      // savedModels'ı bu şekilde kaydediyoruz
       'createdAt': savedModels?.map((e) => e.toFirestore()).toList(),
     };
   }

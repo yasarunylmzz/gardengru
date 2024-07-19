@@ -1,5 +1,6 @@
 import 'dart:io';
 
+
 import 'package:flutter/material.dart';
 import 'dataModels/AuthModel.dart';
 import 'dataModels/UserModel.dart';
@@ -9,7 +10,12 @@ import 'dataModels/SavedModel.dart';
 class UserDataProvider with ChangeNotifier {
   UserDataModel _userDataModel = UserDataModel();
   UserDataModel get userDataModel => _userDataModel;
+
   bool _ISLOGGED = false;
+  void addSavedModel(SavedModel savedModel) {
+    _userDataModel.userModel?.savedModels?.add(savedModel);
+    notifyListeners();
+  }
 
   void setAuthModel(AuthModel authModel) {
     _userDataModel.authModel = authModel;
@@ -28,10 +34,11 @@ class UserDataProvider with ChangeNotifier {
   }
 
   void updateUserModel(
-      String name, String surname) {
+      String name, String surname,List<SavedModel> SavedModels) {
     _userDataModel.userModel = UserModel()
       ..Name = name
-      ..Surname = surname;
+      ..Surname = surname
+      ..savedModels = SavedModels;
     notifyListeners();
   }
 
@@ -40,7 +47,10 @@ class UserDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
+  void updateSavedModels(List<SavedModel> savedModels) {
+    _userDataModel.userModel!.savedModels = savedModels;
+    notifyListeners();
+  }
 
 
   void login(){

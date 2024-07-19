@@ -1,22 +1,19 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gardengru/data/StorageHelper.dart';
-
 import 'package:gardengru/data/dataModels/SavedModel.dart';
 import 'package:gardengru/data/dataModels/UserDataModel.dart';
-import 'package:gardengru/services/gemini_api_service.dart';
 import 'package:provider/provider.dart';
 
 import '../data/UserDataProvider.dart';
-import 'package:path_provider/path_provider.dart';
 
-Future<bool> postSavedItemToDatabase(SavedModel savedModel, context,String title) async {
+Future<bool> postSavedItemToDatabase(SavedModel savedModel, BuildContext context, String title) async {
   StorageHelper storageHelper = StorageHelper();
   UserDataModel user = Provider.of<UserDataProvider>(context, listen: false).userDataModel;
-  if(await storageHelper.UploadSavedFilesToDatabase(user, savedModel.image!, savedModel.text!, title)){
+  
+  if (await storageHelper.UploadSavedFilesToDatabase(user, savedModel.image!, savedModel.text!, title)) {
     user.userModel!.savedModels!.add(savedModel);
-    Provider.of<UserDataProvider>(context, listen: false).updateUserDataModel(user);
+    Provider.of<UserDataProvider>(context, listen: false).setUserModel(user.userModel!);
     return true;
   }
   return false;
@@ -25,12 +22,10 @@ Future<bool> postSavedItemToDatabase(SavedModel savedModel, context,String title
 class ResultTestScreen extends StatelessWidget {
   final SavedModel savedModel;
   final String title;
- // Kullanıcı veri sağlayıcıyı ekledik
 
   ResultTestScreen({
     required this.savedModel,
     required this.title,
- // Kullanıcı veri sağlayıcıyı zorunlu hale getirdik
   });
 
   @override
@@ -75,21 +70,18 @@ class ResultTestScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   Center(
-                      child: ElevatedButton(
+                    child: ElevatedButton(
                       onPressed: () {
-                    postSavedItemToDatabase(savedModel, context, title).then((result) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                    content: Text(result
-                    ? 'Data posted successfully'
-                        : 'Failed to post data'),
-                    ),
-                    );
-                    });
-                    },
+                        postSavedItemToDatabase(savedModel, context, title).then((result) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(result ? 'Data posted successfully' : 'Failed to post data'),
+                            ),
+                          );
+                        });
+                      },
                       child: Text('Save Data'),
                     ),
-
                   ),
                 ],
               ),
