@@ -7,6 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:gardengru/data/UserDataProvider.dart';
 import 'package:gardengru/data/dataModels/SavedModel.dart';
+import 'package:gardengru/screens/HomeScreen.dart';
 import 'package:gardengru/screens/ResultTestScreen.dart';
 import 'package:gardengru/services/gemini_api_service.dart';
 import 'dart:io';
@@ -168,16 +169,7 @@ class _CameraScreenState extends State<CameraScreen> {
             Center(
               child: CircularProgressIndicator(),
             ),
-          Positioned(
-            top: 30,
-            left: 15,
-            child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.arrow_back),
-            ),
-          ),
+
           Positioned(
             bottom: MediaQuery.of(context).size.width * 0.2,
             left: 0,

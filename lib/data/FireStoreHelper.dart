@@ -85,7 +85,8 @@ class FireStoreHelper {
       return false;
     }
   }
-  Future<bool> AddFileReferanceToDatabase(UserDataModel user, String imagePath,String textPath) async {
+  Future<bool> AddFileReferanceToDatabase(UserDataModel user,
+      String imagePath, String textPath, String textFileName, String imageFileName) async {
 
 
     try {
@@ -97,6 +98,8 @@ class FireStoreHelper {
         'imagePath': imagePath,
         'textPath': textPath,
         'savedAt': Timestamp.now(),
+        'textFileName': textFileName,
+        'imageFileName': imageFileName
       });
       return true;
 

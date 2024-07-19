@@ -10,16 +10,12 @@ import 'dataModels/SavedModel.dart';
 class UserDataProvider with ChangeNotifier {
   UserDataModel _userDataModel = UserDataModel();
   UserDataModel get userDataModel => _userDataModel;
-<<<<<<< Updated upstream
-=======
+
   bool _ISLOGGED = false;
   void addSavedModel(SavedModel savedModel) {
     _userDataModel.userModel?.savedModels?.add(savedModel);
     notifyListeners();
   }
-
-
->>>>>>> Stashed changes
 
   void setAuthModel(AuthModel authModel) {
     _userDataModel.authModel = authModel;
@@ -38,11 +34,7 @@ class UserDataProvider with ChangeNotifier {
   }
 
   void updateUserModel(
-<<<<<<< Updated upstream
-      String name, String surname, String gender, int age, String country) {
-=======
       String name, String surname,List<SavedModel> SavedModels) {
->>>>>>> Stashed changes
     _userDataModel.userModel = UserModel()
       ..Name = name
       ..Surname = surname
@@ -50,8 +42,6 @@ class UserDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-<<<<<<< Updated upstream
-=======
   void updateUserDataModel(UserDataModel userDataModel) {
     _userDataModel = userDataModel;
     notifyListeners();
@@ -72,5 +62,4 @@ class UserDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
->>>>>>> Stashed changes
 }
