@@ -11,8 +11,6 @@ class SavedModel{
   File? image;
   String? textFileName;
   String? imageFileName;
-  String? textFileName;
-  String? imageFileName;
 
   SavedModel({this.imagePath, this.textPath});
 
