@@ -1,23 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-
-import 'package:gardengru/data/dataModels/UserModelDto.dart';
+import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:gardengru/data/userRecordProvider.dart';
 import 'package:gardengru/widgets/ProfileSettings.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-
-String getNameAndSurnameForHeader(context) {
-  userRecordProvider u = context.read<userRecordProvider>().user;
-  print("FINDME");
-  String name = u.user.Name ?? '';
-  String surname = u.user.userModel?.Surname ?? '';
-  return name + ' ' + surname;
-}
-
-
-
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -27,22 +12,25 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
-
-
   TextEditingController _nameController =
-  TextEditingController(text: 'John Doe');
+      TextEditingController(text: 'John Doe');
   TextEditingController _emailController =
-  TextEditingController(text: 'john.doe@example.com');
+      TextEditingController(text: 'john.doe@example.com');
   TextEditingController _phoneController =
-  TextEditingController(text: '+1 234 567 8901');
+      TextEditingController(text: '+1 234 567 8901');
 
   bool _isEditing = false;
 
+  String getNameAndSurnameForHeader(BuildContext context) {
+    final userProvider = Provider.of<userRecordProvider>(context);
+    final user = userProvider.user;
+    String name = user.Name ?? '';
+    String surname = user.Surname ?? '';
+    return '$name $surname';
+  }
+
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -100,7 +88,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(
                           height: 1,
                         ),
-
                       ],
                     ),
                   ],
@@ -121,9 +108,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         name: 'My account',
                         description: 'Manage your account',
                         icon: Icons.arrow_forward_ios,
-                      ),
-                      const SizedBox(
-                        height: 10,
                       ),
                       const SizedBox(
                         height: 10,
