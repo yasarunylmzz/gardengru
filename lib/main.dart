@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gardengru/data/records/userRecord.dart';
+import 'package:gardengru/data/userRecordProvider.dart';
 import 'package:gardengru/screens/BottomNavScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'data/UserDataProvider.dart';
+import 'data/userRecordProvider.dart';
 import 'package:gardengru/screens/TestScreen.dart';
 import 'package:gardengru/screens/HomeScreen.dart';
 import 'firebase_options.dart';
@@ -14,29 +16,26 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => UserDataProvider()),
+        ChangeNotifierProvider(create: (_) => userRecordProvider()),
       ],
-      child: MyApp(isLoggedIn: isLoggedIn),
+      child: const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  final bool isLoggedIn;
 
-  MyApp({required this.isLoggedIn});
+
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: isLoggedIn ? BottomNavScreen() : TestScreen(),
+      home:  TestScreen(),
     );
   }
 }

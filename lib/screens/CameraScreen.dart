@@ -5,8 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
-import 'package:gardengru/data/UserDataProvider.dart';
-import 'package:gardengru/data/dataModels/SavedModel.dart';
+import 'package:gardengru/data/dataModels/SavedModelDto.dart';
 import 'package:gardengru/screens/HomeScreen.dart';
 import 'package:gardengru/screens/ResultTestScreen.dart';
 import 'package:gardengru/services/gemini_api_service.dart';
@@ -41,6 +40,35 @@ class _CameraScreenState extends State<CameraScreen> {
   final ImagePicker _picker = ImagePicker();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool _isLoading = false;
+  String? title;
+  String? generatedText;
+
+  Future<void> navigateToResultScreenWithData(File img) async {
+    setState(() {
+      _isLoading = true; // Start loading
+    });
+    try {
+      locationData = await locationService.getCurrentLocation();
+      generatedText = await _geminiApiService.generateContentWithImages([img], locationData);
+      title = await _geminiApiService.generateTitle(generatedText!);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultTestScreen(
+            title: title!,
+            text: generatedText!,
+            image: img,
+            ),
+          ),
+      );
+    } catch (e) {
+      print('Error: $e');
+    } finally {
+      setState(() {
+        _isLoading = false; // Stop loading
+      });
+    }
+  }
 
 
   @override
@@ -48,19 +76,6 @@ class _CameraScreenState extends State<CameraScreen> {
     super.initState();
     _initializeCamera();
     _geminiApiService = GeminiApiService();
-  }
-
-
-  Future<SavedModel> initSavedModelForResultScreen(File image) async {
-    locationData = await locationService.getCurrentLocation();
-
-    SavedModel savedModel = SavedModel();
-    savedModel.createdAt = Timestamp.now();
-    final response = await _geminiApiService.generateContentWithImages([image], locationData);
-
-    savedModel.image = image;
-    savedModel.text = response;
-    return savedModel;
   }
 
   Future<void> _initializeCamera() async {
@@ -85,36 +100,6 @@ class _CameraScreenState extends State<CameraScreen> {
       print('Camera initialization error: $e');
       setState(() {
         _error = 'Camera initialization error: $e';
-      });
-    }
-  }
-
-  Future<void> navigateToResultScreenWithData(File img) async {
-    setState(() {
-      _isLoading = true; // Start loading
-    });
-
-    try {
-      SavedModel savedModel = await initSavedModelForResultScreen(img);
-      String title = await _geminiApiService.generateTitle(savedModel
-          .text!);
-      if (savedModel.text != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultTestScreen(
-
-              savedModel: savedModel,
-              title: title,
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      print('Error: $e');
-    } finally {
-      setState(() {
-        _isLoading = false; // Stop loading
       });
     }
   }

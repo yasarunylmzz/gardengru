@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:gardengru/data/UserDataProvider.dart';
-import 'package:gardengru/data/dataModels/UserDataModel.dart';
-import 'package:gardengru/data/dataModels/UserModel.dart';
+
+import 'package:gardengru/data/dataModels/UserModelDto.dart';
+import 'package:gardengru/data/userRecordProvider.dart';
 import 'package:gardengru/widgets/ProfileSettings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 String getNameAndSurnameForHeader(context) {
-  UserDataModel usr = Provider.of<UserDataProvider>(context, listen: true).userDataModel;
+  userRecordProvider u = context.read<userRecordProvider>().user;
   print("FINDME");
-  print(Provider.of<UserDataProvider>(context).userDataModel.userModel?.Name);
-
-  String name = usr.userModel?.Name ?? '';
-  String surname = usr.userModel?.Surname ?? '';
+  String name = u.user.Name ?? '';
+  String surname = u.user.userModel?.Surname ?? '';
   return name + ' ' + surname;
 }
 

@@ -1,15 +1,13 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:gardengru/data/FireStoreHelper.dart';
-import 'package:gardengru/data/dataModels/SavedModel.dart';
-import 'package:gardengru/data/dataModels/UserDataModel.dart';
+import 'package:gardengru/data/records/userRecord.dart';
+import 'package:gardengru/data/userRecordProvider.dart';
+import 'FireStoreHelper.dart';
+import 'package:gardengru/data/dataModels/SavedModelDto.dart';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-
-
 
 class StorageHelper{
   final storageRef = FirebaseStorage.instance.ref();
@@ -17,14 +15,14 @@ class StorageHelper{
   final FireStoreHelper _fireStoreHelper = FireStoreHelper();
 
 
-  Future<bool> DeleteSavedItemFromStorageAndStore(UserDataModel user, int savedModelIndex) async {
+  Future<bool> DeleteSavedItemFromStorageAndStore(userRecord user, int savedModelIndex,context) async {
     try {
-      if (user.userModel?.savedModels == null || user.userModel!.savedModels!.isEmpty) {
+      if (user.savedItems == null) {
         print("Cannot handle the empty path request");
         return false;
       }
 
-      SavedModel savedModel = user.userModel!.savedModels![savedModelIndex];
+      SavedModel savedModel = user.savedItems![savedModelIndex];
       String imagePath = savedModel.imageFileName!;
       String textPath = savedModel.textFileName!;
 
@@ -48,8 +46,10 @@ class StorageHelper{
         print("Error deleting text file: $e");
       }
 
-      if (await _fireStoreHelper.deleteFileReferenceFromDatabase(user, savedModel.createdAt!)) {
+      if (await _fireStoreHelper.deleteFileReferenceFromDatabase(user, savedModel.savedAt!)) {
         print("File references deleted from database successfully");
+        user.savedItems?.removeAt(savedModelIndex);
+        context.read<userRecordProvider>().setUserRecord(user);
         return true;
       } else {
         print("Failed to delete file references from database");
@@ -62,7 +62,7 @@ class StorageHelper{
   }
 
 
-  Future<bool> UploadSavedFilesToDatabase(UserDataModel user, File image, String text, String title) async {
+  Future<userRecord?> UploadSavedFilesToDatabase(userRecord user, File image, String text, String title) async {
     try {
       final prename = DateTime.now().toString();
 
@@ -100,20 +100,17 @@ class StorageHelper{
       await textRef.putFile(file, metadata);
 
       // Add file reference to Firestore database
-      if (await _fireStoreHelper.AddFileReferanceToDatabase(
+      return await _fireStoreHelper.AddFileReferanceToDatabase(
           user,
           await imageRef.getDownloadURL(),
           await textRef.getDownloadURL(),
           'texts/$desiredFileName.json',
           'images/$desiredFileName.jpeg'
-      )) {
-        return true;
-      } else {
-        return false;
-      }
+      );
+
     } catch (e) {
       print("Error uploading files to storage: $e");
-      return false;
+      return null;
     }
   }
 

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:gardengru/data/FireBaseAuthHelper.dart';
-import 'package:gardengru/data/dataModels/UserDataModel.dart';
+import 'package:gardengru/data/helpers/authHelper.dart';
+import 'package:gardengru/data/userRecordProvider.dart';
 import 'package:gardengru/screens/BottomNavScreen.dart';
+import 'package:gardengru/screens/ConsumerTestScreen.dart';
+import 'package:gardengru/screens/HomeScreen.dart';
 import 'package:gardengru/screens/Register.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gardengru/data/UserDataProvider.dart';
 
 class TestScreen extends StatefulWidget {
   const TestScreen({super.key});
@@ -17,42 +18,33 @@ class TestScreen extends StatefulWidget {
 class _TestScreenState extends State<TestScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final FireBaseAuthHelper _fireBaseAuthHelper = FireBaseAuthHelper();
+  final authHelper _fireBaseAuthHelper = authHelper();
+
   String? _loginError;
   var passwordVisible = true;
+  Future<void> navigate() async {
+    print("now in navigate");
+    bool b = await context.read<userRecordProvider>().initLogged();
 
-
-//login and navigate to next page function
-  Future<void> LoginAndNavigateToNextPage(context) async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
-    UserDataModel? userDataModel =
-        await _fireBaseAuthHelper.InitUserDataModelForCurrentUser(
-            email, password);
-
-    if (userDataModel == null) {
-      print("failed to login");
-      return;
+    if(b) {
+      print("navigated");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BottomNavScreen(),
+          fullscreenDialog: true,
+        ),
+      );
     }
-    Provider.of<UserDataProvider>(context, listen: false)
-        .setAuthModel(userDataModel.authModel!);
-    Provider.of<UserDataProvider>(context, listen: false)
-        .setUserModel(userDataModel.userModel!);
-
-    Provider.of<UserDataProvider>(context, listen: false)
-        .login();
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BottomNavScreen(),
-        fullscreenDialog: true,
-      ),
-    );
+    else{
+      print("not logged in");
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
+    final p = Provider.of<userRecordProvider>(context);
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -118,7 +110,19 @@ class _TestScreenState extends State<TestScreen> {
                 ],
               ),
               ElevatedButton(
-                onPressed: () => LoginAndNavigateToNextPage(context),
+                onPressed: () => {
+                  _fireBaseAuthHelper.signIn(
+                    _emailController.text, _passwordController.text).then((value) {
+                  if (value) {
+                    navigate();
+                    //context.read<userRecordProvider>().initLogged();
+
+                  } else {
+                    setState(() {
+                      _loginError = 'Invalid email or password';
+                    });
+                  }
+                })},
                 style: ElevatedButton.styleFrom(
                   fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 50),
                   backgroundColor: const Color(0xff0098ff),
