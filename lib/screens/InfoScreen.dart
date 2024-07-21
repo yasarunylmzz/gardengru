@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:gardengru/data/StorageHelper.dart';
-import 'package:gardengru/data/dataModels/UserDataModel.dart';
+
+import 'package:gardengru/data/records/userRecord.dart';
+import 'package:gardengru/data/userRecordProvider.dart';
 import 'package:provider/provider.dart';
 
-import '../data/UserDataProvider.dart';// Adjust this import according to your project structure
+import '../data/helpers/StorageHelper.dart';// Adjust this import according to your project structure
 
 void main() {
   runApp(InfoScreen());
 }
 
 class InfoScreen extends StatelessWidget {
-  final Map<String, String>? data;
+  final Map<String, dynamic>? data;
   final String? path;
   final int? index;
+  final userRecord? u;
   final StorageHelper storageHelper = StorageHelper();
 
-  InfoScreen({Key? key, this.data, this.path, this.index}) : super(key: key);
+  InfoScreen({super.key, this.data, this.path, this.index,this.u});
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +49,12 @@ class InfoScreen extends StatelessWidget {
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () async {
-                  bool success = await storageHelper.DeleteSavedItemFromStorageAndStore(
-                    Provider.of<UserDataProvider>(context, listen: false).userDataModel,
-                      index!);
+                  bool success = await storageHelper.
+                  DeleteSavedItemFromStorageAndStore(
+                    u!,
+                    index!,
+                    context
+                  );
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

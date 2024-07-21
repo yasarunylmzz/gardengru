@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:gardengru/data/FireBaseAuthHelper.dart';
-import 'package:gardengru/data/FireStoreHelper.dart';
-import 'package:gardengru/data/dataModels/SavedModel.dart';
-import 'package:gardengru/data/dataModels/UserDataModel.dart';
+import 'package:gardengru/data/helpers/authHelper.dart';
+import 'package:gardengru/data/records/userRecord.dart';
 import 'package:gardengru/screens/TestScreen.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:gardengru/data/UserDataProvider.dart';
-import 'package:gardengru/data/dataModels/AuthModel.dart';
-import 'package:gardengru/data/dataModels/UserModel.dart';
-
+import '../data/helpers/FireStoreHelper.dart';
 class RegisterScreen extends StatefulWidget {
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -18,7 +12,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  FireBaseAuthHelper _authHelper = FireBaseAuthHelper();
+  authHelper _authHelper = authHelper();
   FireStoreHelper _storeHelper = FireStoreHelper();
 
   final TextEditingController _nameController = TextEditingController();
@@ -29,28 +23,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmedPasswordController =
-      TextEditingController();
+  TextEditingController();
 
-  Future<void> _register(BuildContext context) async {
-    UserDataModel? userDataModel = UserDataModel();
-    AuthModel? authModel = await _authHelper.createUser(
-        _emailController.text, _passwordController.text);
+  Future<void> _register() async {
+    userRecord u = userRecord(
+        mail: _emailController.text,
+        pass: _passwordController.text,
+        Name: _nameController.text,
+        Surname: _surnameController.text);
 
-    userDataModel.authModel = authModel;
+    String? uid = await _authHelper.createUser(u.mail!, u.pass!);
+    if (uid != null) {
+      u.uid = uid;
+      _storeHelper.initNewUser(u);
 
-    if (authModel != null) {
-      userDataModel.userModel = UserModel()
-        ..Name = _nameController.text
-        ..Surname = _surnameController.text
-        ..savedModels = <SavedModel>[];
-
-      bool success = await _storeHelper.initNewUser(userDataModel);
-      if (success) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => TestScreen()));
-      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TestScreen()));
     }
-  }
+}
+
+
 
   var passwordVisible = true;
 
@@ -163,7 +157,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ElevatedButton(
               onPressed: () => {
                 if (_formKey.currentState!.validate())
-                  {_register(context)}
+                  {_register()}
                 else
                   {print('validation failed')}
               },
