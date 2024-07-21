@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gardengru/data/records/userRecord.dart';
 import 'package:provider/provider.dart';
 import 'package:gardengru/data/dataModels/UserModelDto.dart';
@@ -11,14 +12,65 @@ import '../userRecordProvider.dart';
 
 class FireStoreHelper {
   FirebaseFirestore _database = FirebaseFirestore.instance;
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<bool> deleteFileReferenceFromDatabase(userRecord user, Timestamp createdAt) async {
+  Future<userRecord?> getUser() async {
+    userRecord? u = userRecord();
+    print("get user called");
+
     try {
-      DocumentReference userDocRef = FirebaseFirestore.instance.collection('data').doc(user.uid);
+      User? au = _auth.currentUser!;
+      if (au != null) {
+        u.uid = au.uid;
+        u.mail = au.email;
+        u.pass = '';
+      }
+      print(u.mail);
+
+       var d = await _database.collection('data').doc(u.uid).get();
+          if (d.exists) {
+            u.Name = d.data()!['Name'];
+            u.Surname = d.data()!['Surname'];
+          }
+          print("getuser setted name surname and name is: ");
+          print(u.Name);
+
+      var c = await _database.collection('data').doc(u.uid).collection('saved').get();
+
+
+        if (c.docs.isNotEmpty) {
+          for (var element in c.docs) {
+            SavedModel s = SavedModel(
+                savedAt: element.data()['savedAt'],
+                imagePath: element.data()['imagePath'],
+                textPath: element.data()['textPath'],
+                imageFileName: element.data()['imageFileName'],
+                textFileName: element.data()['textFileName']
+            );
+            print("setting saved");
+            print(s.textPath);
+            u.savedItems?.add(s);
+          }
+        }
+
+    } catch (e) {
+      print("Error getting user: $e");
+    }
+    print("getuser finished his job");
+    return u;
+  }
+
+
+  Future<bool> deleteFileReferenceFromDatabase(userRecord user,
+      Timestamp createdAt) async {
+    try {
+      DocumentReference userDocRef = FirebaseFirestore.instance.collection(
+          'data').doc(user.uid);
       CollectionReference savedCollectionRef = userDocRef.collection('saved');
 
       // Query to find the document with the specific createdAt timestamp
-      QuerySnapshot savedSnapshot = await savedCollectionRef.where('savedAt', isEqualTo: createdAt).get();
+      QuerySnapshot savedSnapshot = await savedCollectionRef.where(
+          'savedAt', isEqualTo: createdAt).get();
 
       if (savedSnapshot.docs.isNotEmpty) {
         // Deleting the document
@@ -35,9 +87,9 @@ class FireStoreHelper {
   }
 
 
-
   Future<userRecord?> AddFileReferanceToDatabase
-      (userRecord user,String imagePath, String textPath, String textFileName, String imageFileName) async
+      (userRecord user, String imagePath, String textPath, String textFileName,
+      String imageFileName) async
   {
     try {
       DocumentReference userDocRef = _database.collection('data').doc(
@@ -46,11 +98,11 @@ class FireStoreHelper {
       var d = Timestamp.now();
 
       SavedModel s = SavedModel(
-          imageFileName : imageFileName,
-          textFileName : textFileName,
-          savedAt : d,
-          imagePath : imagePath,
-          textPath : textPath
+          imageFileName: imageFileName,
+          textFileName: textFileName,
+          savedAt: d,
+          imagePath: imagePath,
+          textPath: textPath
       );
 
       await savedCollectionRef.add({
@@ -63,14 +115,13 @@ class FireStoreHelper {
       user.savedItems?.add(s);
 
       return user;
-
     }
-    catch(e)
-    {
+    catch (e) {
       print("Error adding file referance to database: $e");
       return null;
     }
   }
+
   Future<bool> initNewUser(userRecord u) async {
     try {
       // Kullanıcının UID'si ile bir belge oluştur
@@ -98,9 +149,6 @@ class FireStoreHelper {
       return false;
     }
   }
-
-
-
 
 
 }

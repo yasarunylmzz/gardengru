@@ -50,7 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Consumer<userRecordProvider>(
         builder: (context, usr, child) {
+          print("home screen");
           userRecord u = usr.user;
+          print("home screen watched and first textfilepath is ${u.savedItems?[0].textPath}");
+          //print(u.savedItems?[0].textFileName);
+
 
           return ListView.builder(
             padding: const EdgeInsets.all(8),

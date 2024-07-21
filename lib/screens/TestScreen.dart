@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gardengru/data/helpers/authHelper.dart';
 import 'package:gardengru/data/userRecordProvider.dart';
 import 'package:gardengru/screens/BottomNavScreen.dart';
+import 'package:gardengru/screens/ConsumerTestScreen.dart';
 import 'package:gardengru/screens/Register.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,13 +18,26 @@ class _TestScreenState extends State<TestScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final authHelper _fireBaseAuthHelper = authHelper();
+
   String? _loginError;
   var passwordVisible = true;
-
+  Future<void> navigate() async {
+    print("now in navigate");
+    //await p.initLogged();
+    print("navigated");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ConsumerTestScreen(),
+        fullscreenDialog: true,
+      ),
+    );
+  }
 
 
   @override
   Widget build(BuildContext context) {
+    final p = Provider.of<userRecordProvider>(context);
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -92,16 +106,11 @@ class _TestScreenState extends State<TestScreen> {
                 onPressed: () => {
                   _fireBaseAuthHelper.signIn(
                     _emailController.text, _passwordController.text).then((value) {
-                  if (value != null) {
-                    context.read<userRecordProvider>().initLogged(value);
-                    //context.read<userRecordProvider>().setLogged(true);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BottomNavScreen(),
-                        fullscreenDialog: true,
-                      ),
-                    );
+                  if (value) {
+                    p.initLogged();
+                    navigate();
+                    //context.read<userRecordProvider>().initLogged();
+
                   } else {
                     setState(() {
                       _loginError = 'Invalid email or password';

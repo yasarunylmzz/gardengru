@@ -15,18 +15,17 @@ class authHelper{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   authHelper();
 
-
-  Future<String?> signIn(String email, String password) async
+  Future<bool> signIn(String email, String password) async
   {
     try
     {
       await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
       var uid = _firebaseAuth.currentUser?.uid;
-      return uid;
+      return true;
     } catch (e)
     {
       print('Error during login: $e');
-      return null;
+      return false;
     }
   }
 

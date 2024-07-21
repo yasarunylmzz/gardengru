@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gardengru/data/dataModels/SavedModelDto.dart';
+import 'package:gardengru/data/helpers/FireStoreHelper.dart';
 import 'package:gardengru/data/records/savedItemsRecord.dart';
 import 'package:gardengru/data/records/userRecord.dart';
 
@@ -11,16 +12,30 @@ import 'dataModels/UserModelDto.dart';
 class  userRecordProvider extends ChangeNotifier{
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FireStoreHelper _storeHelper = FireStoreHelper();
   bool _isLogged = false;
-  userRecord _user;
-  userRecordProvider(this._user);
+  bool _isLoading = false;
+  userRecord _user = userRecord();
+  userRecordProvider();
   get isLogged => _isLogged;
+
   get user => _user;
 
+  get isLoading => _isLoading;
+
   
-  void initLogged(String uid){
-    _user = UserModel.fromFirestore(data)
-    
+  Future<void> initLogged() async{
+    _isLoading = true;
+    print("init logged called in userRecordProvider");
+    var u  = await _storeHelper.getUser();
+    print("get user returned a user and name is: ${u?.Name}");
+
+    if(u!=null){
+      _user = u;
+      _isLoading=false;
+      notifyListeners();
+    }
+
   }
 
   void addSavedItem(SavedModel savedModel){
@@ -35,6 +50,7 @@ class  userRecordProvider extends ChangeNotifier{
 
   void setUserRecord(userRecord user){
     _user = user;
+    print("user setted in userRecordProvider and name is: ${_user.Name}");
     notifyListeners();
   }
 

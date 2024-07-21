@@ -19,7 +19,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => userRecordProvider(userRecord())),
+        ChangeNotifierProvider(create: (_) => userRecordProvider()),
       ],
       child: const MyApp(),
     ),
