@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:gardengru/data/userRecordProvider.dart';
 
 class ConsumerTestScreen extends StatelessWidget {
+
   const ConsumerTestScreen({super.key});
 
   @override
@@ -19,12 +20,11 @@ class ConsumerTestScreen extends StatelessWidget {
             child: Consumer<userRecordProvider>(
               builder: (context, usr, child) {
                 userRecord u = usr.user;
-                print(u.savedItems?[0].textFileName);
                 return ListView.builder(
-                  itemCount: u.savedItems?.length,
+                  itemCount: u.getsaved?.length ?? 5,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(u.savedItems?[index].textFileName ?? ''),
+                      title: Text(u.getsaved?[index].imageFileName ?? ''),
                     );
                   },
                 );

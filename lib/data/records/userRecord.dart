@@ -9,6 +9,20 @@ class userRecord{
   String? Surname;
   List<SavedModel>? savedItems;
 
+  String? get getuid => uid;
+  String? get getmail => mail;
+  String? get getpass => pass;
+  String? get getname => Name;
+  String? get getsurname => Surname;
+  List<SavedModel>? get getsaved => savedItems;
+
+  void setsaved(List<SavedModel>? savedItems) => this.savedItems = savedItems;
+
+
+
+
+
+
   userRecord({this.mail, this.pass, this.Name, this.Surname, this.savedItems,this.uid});
 
 

@@ -3,6 +3,7 @@ import 'package:gardengru/data/helpers/authHelper.dart';
 import 'package:gardengru/data/userRecordProvider.dart';
 import 'package:gardengru/screens/BottomNavScreen.dart';
 import 'package:gardengru/screens/ConsumerTestScreen.dart';
+import 'package:gardengru/screens/HomeScreen.dart';
 import 'package:gardengru/screens/Register.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,15 +24,21 @@ class _TestScreenState extends State<TestScreen> {
   var passwordVisible = true;
   Future<void> navigate() async {
     print("now in navigate");
-    //await p.initLogged();
-    print("navigated");
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ConsumerTestScreen(),
-        fullscreenDialog: true,
-      ),
-    );
+    bool b = await context.read<userRecordProvider>().initLogged();
+
+    if(b) {
+      print("navigated");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BottomNavScreen(),
+          fullscreenDialog: true,
+        ),
+      );
+    }
+    else{
+      print("not logged in");
+    }
   }
 
 
@@ -107,7 +114,6 @@ class _TestScreenState extends State<TestScreen> {
                   _fireBaseAuthHelper.signIn(
                     _emailController.text, _passwordController.text).then((value) {
                   if (value) {
-                    p.initLogged();
                     navigate();
                     //context.read<userRecordProvider>().initLogged();
 

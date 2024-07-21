@@ -24,17 +24,19 @@ class  userRecordProvider extends ChangeNotifier{
   get isLoading => _isLoading;
 
   
-  Future<void> initLogged() async{
+  Future<bool> initLogged() async{
     _isLoading = true;
     print("init logged called in userRecordProvider");
-    var u  = await _storeHelper.getUser();
-    print("get user returned a user and name is: ${u?.Name}");
+    userRecord? u  = await _storeHelper.getUser();
+    print("get user returned savedmodels included and lenght: ${u?.getsaved?.length}");
 
     if(u!=null){
       _user = u;
       _isLoading=false;
       notifyListeners();
+      return true;
     }
+    return false;
 
   }
 

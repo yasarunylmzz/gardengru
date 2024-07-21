@@ -16,6 +16,7 @@ class FireStoreHelper {
 
   Future<userRecord?> getUser() async {
     userRecord? u = userRecord();
+    List<SavedModel> S = [];
     print("get user called");
 
     try {
@@ -35,7 +36,9 @@ class FireStoreHelper {
           print("getuser setted name surname and name is: ");
           print(u.Name);
 
-      var c = await _database.collection('data').doc(u.uid).collection('saved').get();
+
+
+         var c = await _database.collection('data').doc(u.uid).collection('saved').get();
 
 
         if (c.docs.isNotEmpty) {
@@ -49,9 +52,12 @@ class FireStoreHelper {
             );
             print("setting saved");
             print(s.textPath);
-            u.savedItems?.add(s);
+            S.add(s);
           }
+          u.setsaved(S);
+
         }
+
 
     } catch (e) {
       print("Error getting user: $e");

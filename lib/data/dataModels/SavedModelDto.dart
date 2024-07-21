@@ -9,8 +9,15 @@ class SavedModel{
   String? imagePath;
   String? textPath;
   Timestamp? savedAt;
+  String? get getimageFileName => imageFileName;
+  String? get gettextFileName => textFileName;
+  String? get getimagePath => imagePath;
+  String? get gettextPath => textPath;
+  Timestamp? get getsavedAt => savedAt;
+
 
   SavedModel({this.imageFileName, this.textFileName, this.imagePath, this.textPath, this.savedAt});
+
 
   factory SavedModel.fromFireStore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;

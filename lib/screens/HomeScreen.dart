@@ -20,15 +20,23 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  Future<List<Map<String, dynamic>>> fetchData(String url) async {
-    if (url.isEmpty) {
-      throw Exception('URL is empty');
-    }
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      return List<Map<String, dynamic>>.from(json.decode(response.body));
-    } else {
-      throw Exception('Failed to load data');
+  Future<Map<String, String>?> getJsonAsMapFromStorage(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = jsonDecode(response.body);
+        return data.map((key, value) {
+          String stringValue = value.toString();
+          return MapEntry(key, stringValue);
+        });
+      } else {
+        print("Error downloading file: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error downloading file: $e");
+      return null;
     }
   }
 
@@ -50,39 +58,45 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Consumer<userRecordProvider>(
         builder: (context, usr, child) {
-          print("home screen");
           userRecord u = usr.user;
-          print("home screen watched and first textfilepath is ${u.savedItems?[0].textPath}");
-          //print(u.savedItems?[0].textFileName);
-
-
           return ListView.builder(
             padding: const EdgeInsets.all(8),
-            itemCount: u.savedItems?.length,
+            itemCount: u.getsaved?.length ?? 0,
             itemBuilder: (context, index) {
-              final textPath = u.savedItems?[index].textPath ?? '';
-              // Debug: Print the URL
+              final textPath = u.getsaved?[index].gettextPath ?? '';
+
               print('Fetching data from URL: $textPath');
 
-              return FutureBuilder<List<Map<String, dynamic>>>(
-                future: fetchData(textPath),
+              return FutureBuilder<Map<String, String>?>(
+                future: getJsonAsMapFromStorage(textPath),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data == null) {
+                    return const Center(child: Text('No data found'));
                   } else {
-                    final List<Map<String, dynamic>> dataList = snapshot.data!;
+                    final Map<String, String>? dataMap = snapshot.data;
+
+                    if (dataMap == null || dataMap.isEmpty) {
+                      return const Center(child: Text('No data found'));
+                    }
+
+                    final List<Map<String, dynamic>> dataList = [];
+                    dataMap.forEach((key, value) {
+                      dataList.add({'title': key, 'text': value});
+                    });
 
                     return ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: dataList.length,
                       itemBuilder: (context, index) {
                         final data = dataList[index];
                         final title = data['title'] as String?;
                         final text = data['text'] as String?;
-                        final imagePath = u.savedItems?[index].imagePath;
+                        final imagePath = u.getsaved?[index].getimagePath;
 
                         return InkWell(
                           onTap: () {
