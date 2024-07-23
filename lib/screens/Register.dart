@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gardengru/data/helpers/authHelper.dart';
 import 'package:gardengru/data/records/userRecord.dart';
-import 'package:gardengru/screens/TestScreen.dart';
+import 'package:gardengru/screens/LoginScreen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../data/helpers/FireStoreHelper.dart';
 class RegisterScreen extends StatefulWidget {
@@ -40,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => TestScreen()));
+            builder: (context) => LoginScreen()));
     }
 }
 
@@ -251,7 +251,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => TestScreen()));
+                              builder: (context) => LoginScreen()));
                     },
                     child: Text(
                       'Log In',

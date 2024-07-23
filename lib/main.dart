@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gardengru/data/records/userRecord.dart';
 import 'package:gardengru/data/userRecordProvider.dart';
@@ -5,25 +6,61 @@ import 'package:gardengru/screens/BottomNavScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'data/userRecordProvider.dart';
-import 'package:gardengru/screens/TestScreen.dart';
+import 'package:gardengru/screens/LoginScreen.dart';
 import 'package:gardengru/screens/HomeScreen.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => userRecordProvider()),
       ],
-      child: const MyApp(),
+      child: RestartWidget(
+        child: MyApp(),
+      ),
     ),
   );
+}
+
+class RestartWidget extends StatefulWidget {
+  final Widget child;
+
+  RestartWidget({required this.child});
+
+  static void restartApp(BuildContext context) {
+    final _RestartWidgetState? state =
+    context.findAncestorStateOfType<_RestartWidgetState>();
+    state?.restartApp();
+  }
+
+  @override
+  _RestartWidgetState createState() => _RestartWidgetState();
+}
+
+class _RestartWidgetState extends State<RestartWidget> {
+  Key key = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      key = UniqueKey();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: key,
+      child: widget.child,
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -33,9 +70,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home:  TestScreen(),
-    );
+    FirebaseAuth auth = FirebaseAuth.instance;
+    bool isLogged = auth.currentUser != null;
+
+    if (isLogged) {
+      //context.read<userRecordProvider>().initLogged();
+      return const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: BottomNavScreen(),
+      );
+    } else {
+      return const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: LoginScreen(),
+      );
+    }
   }
 }

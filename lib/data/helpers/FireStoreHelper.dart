@@ -93,7 +93,7 @@ class FireStoreHelper {
   }
 
 
-  Future<userRecord?> AddFileReferanceToDatabase
+  Future<SavedModel?> AddFileReferanceToDatabase
       (userRecord user, String imagePath, String textPath, String textFileName,
       String imageFileName) async
   {
@@ -118,9 +118,9 @@ class FireStoreHelper {
         'textFileName': textFileName,
         'imageFileName': imageFileName
       });
-      user.savedItems?.add(s);
 
-      return user;
+
+      return s;
     }
     catch (e) {
       print("Error adding file referance to database: $e");

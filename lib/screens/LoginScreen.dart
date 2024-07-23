@@ -2,49 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:gardengru/data/helpers/authHelper.dart';
 import 'package:gardengru/data/userRecordProvider.dart';
 import 'package:gardengru/screens/BottomNavScreen.dart';
-import 'package:gardengru/screens/ConsumerTestScreen.dart';
 import 'package:gardengru/screens/HomeScreen.dart';
 import 'package:gardengru/screens/Register.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class TestScreen extends StatefulWidget {
-  const TestScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  _TestScreenState createState() => _TestScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _TestScreenState extends State<TestScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final authHelper _fireBaseAuthHelper = authHelper();
 
   String? _loginError;
   var passwordVisible = true;
-  Future<void> navigate() async {
-    print("now in navigate");
-    bool b = await context.read<userRecordProvider>().initLogged();
 
-    if(b) {
-      print("navigated");
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BottomNavScreen(),
-          fullscreenDialog: true,
-        ),
-      );
-    }
-    else{
-      print("not logged in");
-    }
-  }
 
 
   @override
   Widget build(BuildContext context) {
-    final p = Provider.of<userRecordProvider>(context);
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -114,7 +95,13 @@ class _TestScreenState extends State<TestScreen> {
                   _fireBaseAuthHelper.signIn(
                     _emailController.text, _passwordController.text).then((value) {
                   if (value) {
-                    navigate();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomeScreen(),
+                        fullscreenDialog: true,
+                      ),
+                    );
                     //context.read<userRecordProvider>().initLogged();
 
                   } else {

@@ -1,8 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gardengru/data/userRecordProvider.dart';
 import 'package:gardengru/widgets/ProfileSettings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../main.dart';
+import 'LoginScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,11 +18,11 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController _nameController =
-      TextEditingController(text: 'John Doe');
+  TextEditingController(text: 'John Doe');
   TextEditingController _emailController =
-      TextEditingController(text: 'john.doe@example.com');
+  TextEditingController(text: 'john.doe@example.com');
   TextEditingController _phoneController =
-      TextEditingController(text: '+1 234 567 8901');
+  TextEditingController(text: '+1 234 567 8901');
 
   bool _isEditing = false;
 
@@ -27,6 +32,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String name = user.Name ?? '';
     String surname = user.Surname ?? '';
     return '$name $surname';
+  }
+
+  void _handleLogout() async{
+    FirebaseAuth.instance.signOut();
+    RestartWidget.restartApp(context);
+    print('User tapped Log Out');
   }
 
   @override
@@ -112,10 +123,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      const ProfileSettings(
+                      ProfileSettings(
                         name: 'Log Out',
                         description: 'Further secure your account for safety',
                         icon: Icons.arrow_forward_ios,
+                        onTap: _handleLogout,
                       ),
                       const SizedBox(
                         height: 10,

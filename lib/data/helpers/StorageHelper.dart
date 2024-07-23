@@ -15,7 +15,7 @@ class StorageHelper{
   final FireStoreHelper _fireStoreHelper = FireStoreHelper();
 
 
-  Future<bool> DeleteSavedItemFromStorageAndStore(userRecord user, int savedModelIndex,context) async {
+  Future<bool> DeleteSavedItemFromStorageAndStore(userRecord user, int savedModelIndex) async {
     try {
       if (user.savedItems == null) {
         print("Cannot handle the empty path request");
@@ -49,7 +49,6 @@ class StorageHelper{
       if (await _fireStoreHelper.deleteFileReferenceFromDatabase(user, savedModel.savedAt!)) {
         print("File references deleted from database successfully");
         user.savedItems?.removeAt(savedModelIndex);
-        context.read<userRecordProvider>().setUserRecord(user);
         return true;
       } else {
         print("Failed to delete file references from database");
@@ -62,13 +61,14 @@ class StorageHelper{
   }
 
 
-  Future<userRecord?> UploadSavedFilesToDatabase(userRecord user, File image, String text, String title) async {
+  Future<SavedModel?> UploadSavedFilesToDatabase(userRecord user,
+      File image, String text, String title) async {
     try {
       final prename = DateTime.now().toString();
 
        final desiredFileName = prename.replaceAll(RegExp(r'\s+'), '');
 
-      final imageRef = storageRef.child('images/$desiredFileName');
+      final imageRef = storageRef.child('images/$desiredFileName.jpeg');
       final textRef = storageRef.child('texts/$desiredFileName.json');
 
       // Upload image file

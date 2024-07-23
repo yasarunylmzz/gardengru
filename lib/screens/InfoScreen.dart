@@ -63,7 +63,7 @@ class InfoScreen extends StatelessWidget {
                 onPressed: () async {
                   bool success =
                       await storageHelper.DeleteSavedItemFromStorageAndStore(
-                          u!, index!, context);
+                          u!, index!);
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

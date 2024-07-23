@@ -7,13 +7,14 @@ import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:gardengru/data/dataModels/SavedModelDto.dart';
 import 'package:gardengru/screens/HomeScreen.dart';
-import 'package:gardengru/screens/ResultTestScreen.dart';
+import 'package:gardengru/screens/ResponseScreen.dart';
 import 'package:gardengru/services/gemini_api_service.dart';
 import 'dart:io';
 import 'package:location/location.dart';
 import 'package:gardengru/services/location_services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -21,6 +22,7 @@ class CameraScreen extends StatefulWidget {
   @override
   State<CameraScreen> createState() => _CameraScreenState();
 }
+
 Future<File> createTemporaryTextFile(String text) async {
   final Directory tempDir = await getTemporaryDirectory();
   final String tempPath = tempDir.path;
@@ -54,12 +56,12 @@ class _CameraScreenState extends State<CameraScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ResultTestScreen(
+          builder: (context) => ResponseScreen(
             title: title!,
             text: generatedText!,
             image: img,
-            ),
           ),
+        ),
       );
     } catch (e) {
       print('Error: $e');
@@ -69,7 +71,6 @@ class _CameraScreenState extends State<CameraScreen> {
       });
     }
   }
-
 
   @override
   void initState() {
@@ -83,7 +84,7 @@ class _CameraScreenState extends State<CameraScreen> {
       _cameras = await availableCameras();
       if (_cameras != null && _cameras!.isNotEmpty) {
         _controller = CameraController(
-          _cameras![0], // İlk kullanılabilir kamerayı kullan
+          _cameras![0], // Use the first available camera
           ResolutionPreset.high,
         );
         await _controller!.initialize();
@@ -144,17 +145,23 @@ class _CameraScreenState extends State<CameraScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned.fill(
-            child: AspectRatio(
-              aspectRatio: _controller!.value.aspectRatio,
-              child: CameraPreview(_controller!),
+          if (!_isLoading)
+            Positioned.fill(
+              child: AspectRatio(
+                aspectRatio: _controller!.value.aspectRatio,
+                child: CameraPreview(_controller!),
+              ),
             ),
-          ),
           if (_isLoading)
-            Center(
-              child: CircularProgressIndicator(),
+            Container(
+              color: Colors.white,
+              child: Center(
+                child: SpinKitThreeBounce(
+                  color: Colors.green,
+                  size: 50.0,
+                ),
+              ),
             ),
-
           Positioned(
             bottom: MediaQuery.of(context).size.width * 0.2,
             left: 0,
