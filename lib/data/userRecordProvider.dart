@@ -23,14 +23,15 @@ class userRecordProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   List<Map<String, String>?> get homeScreenData => _homeScreenData;
 
+
   // Initialize the logged user and home screen data
   Future<bool> initLogged() async {
-    //_isLoading = true;
+
     //notifyListeners();
     if(_isInitialized){
       return true;
     }
-
+    _isLoading = true;
     userRecord? u = await _storeHelper.getUser();
     if (u != null) {
       _user = u;
@@ -192,4 +193,9 @@ class userRecordProvider extends ChangeNotifier {
       return;
     }
   }
+  void setIsInitialized(bool isInitialized){
+    _isInitialized = isInitialized;
+    notifyListeners();
+  }
+
 }
