@@ -23,12 +23,10 @@ class userRecordProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   List<Map<String, String>?> get homeScreenData => _homeScreenData;
 
-
   // Initialize the logged user and home screen data
   Future<bool> initLogged() async {
-
     //notifyListeners();
-    if(_isInitialized){
+    if (_isInitialized) {
       return true;
     }
     _isLoading = true;
@@ -70,8 +68,7 @@ class userRecordProvider extends ChangeNotifier {
     return data;
   }
 
-  Future<Map<String, String>?> getSingleDataFromUrl(url) async{
-
+  Future<Map<String, String>?> getSingleDataFromUrl(url) async {
     Map<String, String> mapData = {};
     try {
       final response = await http.get(Uri.parse(url!));
@@ -93,15 +90,11 @@ class userRecordProvider extends ChangeNotifier {
       print("Error downloading file: $e");
     }
     return mapData;
-
   }
-
-
 
   void removeSavedItemSilently(int index) {
     _user.savedItems!.removeAt(index);
   }
-
 
   // Remove a saved item from the user record
   void removeSavedItem(int index) {
@@ -115,7 +108,7 @@ class userRecordProvider extends ChangeNotifier {
     notifyListeners();
 
     var d = await getSingleDataFromUrl(savedModel.textPath);
-    if(d!= null){
+    if (d != null) {
       _homeScreenData.add(d);
     }
     notifyListeners();
@@ -123,10 +116,7 @@ class userRecordProvider extends ChangeNotifier {
     notifyListeners();
     _isLoading = false;
     notifyListeners();
-
   }
-
-
 
   // Setters that notify listeners when the state changes
   set homeScreenData(List<Map<String, String>?> data) {
@@ -161,7 +151,7 @@ class userRecordProvider extends ChangeNotifier {
     }
     try {
       DocumentSnapshot<Map<String, dynamic>> docSnapshot =
-      await _firestore.collection("data").doc(uid).get();
+          await _firestore.collection("data").doc(uid).get();
       if (!docSnapshot.exists) {
         print("User data not found");
         return;
@@ -169,7 +159,7 @@ class userRecordProvider extends ChangeNotifier {
       // UserModel veri çekme
       UserModel userModel = UserModel.fromFirestore(docSnapshot.data()!);
       CollectionReference savedCollection =
-      _firestore.collection('data').doc(uid).collection('saved');
+          _firestore.collection('data').doc(uid).collection('saved');
       QuerySnapshot savedSnapshot = await savedCollection.get();
       // saved koleksiyonunu çekme
       List<SavedModel> savedModels = [];
@@ -193,9 +183,9 @@ class userRecordProvider extends ChangeNotifier {
       return;
     }
   }
-  void setIsInitialized(bool isInitialized){
+
+  void setIsInitialized(bool isInitialized) {
     _isInitialized = isInitialized;
     notifyListeners();
   }
-
 }
