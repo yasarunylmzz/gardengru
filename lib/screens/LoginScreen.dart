@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:gardengru/data/helpers/authHelper.dart';
 import 'package:gardengru/data/userRecordProvider.dart';
 import 'package:gardengru/screens/BottomNavScreen.dart';
-import 'package:gardengru/screens/HomeScreen.dart';
+import 'package:gardengru/screens/ListSavedItems.dart';
 import 'package:gardengru/screens/Register.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'ResetPassword.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,8 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? _loginError;
   var passwordVisible = true;
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +78,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ResetPassword(),
+                          fullscreenDialog: true,
+                        ),
+                      );
+                    },
                     child: Text(
                       'Forgot Password?',
                       style: GoogleFonts.workSans(
@@ -93,26 +101,24 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: () => {
                   _fireBaseAuthHelper.signIn(
-                    _emailController.text, _passwordController.text).then((value) {
-                  if (value) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomeScreen(),
-                        fullscreenDialog: true,
-                      ),
-                    );
-                    //context.read<userRecordProvider>().initLogged();
-
-                  } else {
-                    setState(() {
-                      _loginError = 'Invalid email or password';
-                    });
-                  }
-                })},
+                      _emailController.text, _passwordController.text).then((value) {
+                    if (value) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BottomNavScreen(),
+                          fullscreenDialog: true,
+                        ),
+                      );
+                    } else {
+                      setState(() {
+                        _loginError = 'Invalid email or password.';
+                      });
+                    }
+                  })},
                 style: ElevatedButton.styleFrom(
                   fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 50),
-                  backgroundColor: const Color(0xff0098ff),
+                  backgroundColor: const Color(0xff4cb254),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(80),
                   ),
@@ -217,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: GoogleFonts.workSans(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xff0098ff),
+                        color: const Color(0xff4cb254),
                       ),
                     ),
                   ),

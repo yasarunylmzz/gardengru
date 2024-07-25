@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:gardengru/data/dataModels/SavedModelDto.dart';
-import 'package:gardengru/screens/HomeScreen.dart';
+import 'package:gardengru/screens/ListSavedItems.dart';
 import 'package:gardengru/screens/ResponseScreen.dart';
 import 'package:gardengru/services/gemini_api_service.dart';
 import 'dart:io';

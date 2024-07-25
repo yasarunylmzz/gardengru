@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:gardengru/data/helpers/authHelper.dart';
 import 'package:gardengru/data/records/userRecord.dart';
 import 'package:gardengru/screens/LoginScreen.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../data/helpers/FireStoreHelper.dart';
+
 class RegisterScreen extends StatefulWidget {
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -12,18 +12,14 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  authHelper _authHelper = authHelper();
-  FireStoreHelper _storeHelper = FireStoreHelper();
+  final authHelper _authHelper = authHelper();
+  final FireStoreHelper _storeHelper = FireStoreHelper();
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
-  final TextEditingController _genderController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController();
-  final TextEditingController _countryController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmedPasswordController =
-  TextEditingController();
+  final TextEditingController _confirmedPasswordController = TextEditingController();
 
   Future<void> _register() async {
     userRecord u = userRecord(
@@ -36,15 +32,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (uid != null) {
       u.uid = uid;
       _storeHelper.initNewUser(u);
-
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => LoginScreen()));
+            builder: (context) => LoginScreen()),
+      );
     }
-}
-
-
+  }
 
   var passwordVisible = true;
 
@@ -162,7 +156,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   {print('validation failed')}
               },
               child: Text(
-                'Sign In',
+                'Sign Up',
                 style: GoogleFonts.workSans(
                   fontSize: 20,
                   color: Colors.white,
@@ -171,7 +165,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 50),
-                backgroundColor: const Color(0xff0098ff),
+                backgroundColor: const Color(0xff4cb254),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(80),
                 ),
@@ -235,35 +229,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Already have an account?',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Already have an account?',
+                  style: GoogleFonts.workSans(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoginScreen()));
+                  },
+                  child: Text(
+                    'Log In',
                     style: GoogleFonts.workSans(
                       fontSize: 14,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xff4cb254),
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
-                    },
-                    child: Text(
-                      'Log In',
-                      style: GoogleFonts.workSans(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xff0098ff),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),

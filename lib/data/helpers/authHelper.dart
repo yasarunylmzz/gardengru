@@ -30,6 +30,20 @@ class authHelper{
   }
 
 
+  Future<bool> resetPassword(String email) async
+  {
+    try
+    {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      return true;
+    } catch (e)
+    {
+      print('Error during password reset: $e');
+      return false;
+    }
+  }
+
+
   Future<String?> createUser(String mail, String pass) async {
     try {
         UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
@@ -47,8 +61,8 @@ class authHelper{
     }
   }
 
-
-
-
-
 }
+
+
+
+

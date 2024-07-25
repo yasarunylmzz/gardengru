@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:gardengru/screens/LoginScreen.dart';
-import 'package:gardengru/screens/HomeScreen.dart';
+import 'package:gardengru/screens/ListSavedItems.dart';
 import 'firebase_options.dart';
 
 void main() async {
