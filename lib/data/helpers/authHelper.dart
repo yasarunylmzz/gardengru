@@ -28,6 +28,18 @@ class authHelper{
       return false;
     }
   }
+  Future<bool> verifyEmail() async
+  {
+    try
+    {
+      await _firebaseAuth.currentUser!.sendEmailVerification();
+      return true;
+    } catch (e)
+    {
+      print('Error during email verification: $e');
+      return false;
+    }
+  }
 
 
   Future<bool> resetPassword(String email) async
@@ -61,6 +73,49 @@ class authHelper{
     }
   }
 
+  Future<bool> deleteUser() async {
+    try {
+      await _firebaseAuth.currentUser!.delete();
+      return true;
+    } catch (e) {
+      print("Error deleting user: $e");
+      return false;
+    }
+  }
+  Future<bool> changePassword(String oldPassword, String newPassword) async {
+    if(oldPassword == newPassword ){
+      return false;
+    }
+    try {
+      User? userCredential = _firebaseAuth.currentUser;
+      if(userCredential == null)
+      {
+        return false;
+      }
+      try {
+        AuthCredential credential = EmailAuthProvider.credential(
+            email: userCredential.email!, password: oldPassword);
+        await userCredential.reauthenticateWithCredential(credential);
+      }
+      catch(e)
+      {
+        print("Error reauthenticating user: $e");
+        return false;
+      }
+      try{
+      await _firebaseAuth.currentUser!.updatePassword(newPassword);
+      }
+      catch(e)
+      {
+        print("Error updating password: $e");
+        return false;
+      }
+      return true;
+    } catch (e) {
+      print("Error changing password: $e");
+      return false;
+    }
+  }
 }
 
 

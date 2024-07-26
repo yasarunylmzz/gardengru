@@ -15,6 +15,11 @@ class HomeScreenWidgetDataModel {
   HomeScreenWidgetDataModel.fromJson(String json) {
     try {
       Map<String, dynamic> response = jsonDecode(json);
+
+      // gemini cevabı başında bu var
+      json.contains("```json", 0)
+          ? response = jsonDecode(json.substring(7, json.length - 3))
+          : response = jsonDecode(json);
       if (response.containsKey('widgets') &&
           response['widgets'] != null &&
           response['widgets'].isNotEmpty) {

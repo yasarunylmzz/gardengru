@@ -16,13 +16,13 @@ class GeminiApiService {
   GeminiApiService() {
     _initialization = _initialize();
   }
-
+//TODO may responses regex ???
   Future<void> _initialize() async {
     final apiKey = 'AIzaSyC8wUrkoW9B7yQEzJ1L9LmwL_m1vdCm5fM'; // Replace this with your environment variable method for production.
     if (apiKey == null) {
       throw Exception('No \$API_KEY environment variable');
     }
-    _model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
+    _model = GenerativeModel(model: 'gemini-1.5-pro', apiKey: apiKey);
     final String res = await rootBundle.loadString('assets/prompt.json');
     _promptData = json.decode(res);
   }
@@ -51,6 +51,7 @@ class GeminiApiService {
   }
 
   Future<HomeScreenDataModel?> getHomeScreenData() async {
+    //GenerativeModel  _jsonmodel = GenerativeModel(model: 'tunedModels/json-sqmckkzcylvs', apiKey: 'AIzaSyC8wUrkoW9B7yQEzJ1L9LmwL_m1vdCm5fM');
 
     await _initialization; // Ensure initialization is complete
     LocationData locationData = await _locationServices.getCurrentLocation();
