@@ -26,22 +26,6 @@ class InfoScreen extends StatelessWidget {
           SliverAppBar(
             expandedHeight: MediaQuery.of(context).size.height * 0.4,
             flexibleSpace: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.zero, // Remove default padding
-              title: Container(
-                width: double.infinity, // Full width of the parent
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Align(
-                  alignment: Alignment.bottomCenter, // Align title to bottom
-                  child: Text(
-                    data?['title'].replaceAll(RegExp(r'^##'), '') ?? 'Info',
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center, // Center the text
-                  ),
-                ),
-              ),
               background: path != null
                   ? Hero(
                       tag: path!,
@@ -63,8 +47,20 @@ class InfoScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(10.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(height: 16),
+                      SizedBox(height: 8),
+                      Center(
+                        child: Text(
+                          data?['title'].replaceAll(RegExp(r'^##'), '') ??
+                              'Info',
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center, // Center the text
+                        ),
+                      ),
                       _buildRichText(data?['text'] ?? 'No Data'),
                     ],
                   ),

@@ -4,7 +4,6 @@ import 'package:gardengru/screens/CameraScreen.dart';
 
 import 'package:gardengru/screens/ListSavedItems.dart';
 import 'package:gardengru/screens/ProfileScreen.dart';
-import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class BottomNavScreen extends StatefulWidget {
   const BottomNavScreen({super.key});
