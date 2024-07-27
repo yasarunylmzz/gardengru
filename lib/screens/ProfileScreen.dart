@@ -6,6 +6,7 @@ import 'package:gardengru/data/userRecordProvider.dart';
 import 'package:gardengru/widgets/ProfileSettings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'ManageAccountScreen.dart';
 import '../main.dart';
 import 'LoginScreen.dart';
 
@@ -17,12 +18,9 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  TextEditingController _nameController =
-  TextEditingController(text: 'John Doe');
-  TextEditingController _emailController =
-  TextEditingController(text: 'john.doe@example.com');
-  TextEditingController _phoneController =
-  TextEditingController(text: '+1 234 567 8901');
+  TextEditingController _nameController = TextEditingController(text: 'John Doe');
+  TextEditingController _emailController = TextEditingController(text: 'john.doe@example.com');
+  TextEditingController _phoneController = TextEditingController(text: '+1 234 567 8901');
 
   bool _isEditing = false;
 
@@ -34,10 +32,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return '$name $surname';
   }
 
-  void _handleLogout() async{
+  void _handleLogout() async {
     FirebaseAuth.instance.signOut();
     RestartWidget.restartApp(context);
     print('User tapped Log Out');
+  }
+
+  void _navigateToManageAccount() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ManageAccountScreen()),
+    );
   }
 
   @override
@@ -115,10 +120,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const ProfileSettings(
+                      ProfileSettings(
                         name: 'My account',
                         description: 'Manage your account',
                         icon: Icons.arrow_forward_ios,
+                        onTap: _navigateToManageAccount,
                       ),
                       const SizedBox(
                         height: 10,

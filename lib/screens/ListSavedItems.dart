@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:gardengru/data/dataModels/HomeScreenDataModel.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
@@ -9,20 +10,21 @@ import '../data/userRecordProvider.dart';
 import '../data/records/userRecord.dart';
 import 'InfoScreen.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class ListSavedItems extends StatefulWidget {
+  const ListSavedItems({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ListSavedItems> createState() => _ListSavedItemsState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ListSavedItemsState extends State<ListSavedItems> {
   @override
   void initState() {
     super.initState();
     final userProvider =
         Provider.of<userRecordProvider>(context, listen: false);
     userProvider.initLogged();
+    userProvider.initNewHomeScreen();
   }
 
   Future<void> _refreshData() async {
@@ -118,8 +120,9 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           }
 
-          List<Map<String, String>?> dataList = usrProvider.homeScreenData;
+          List<Map<String, String>?> dataList = usrProvider.listSavedItemScreenData;
           userRecord u = usrProvider.user;
+
 
           return RefreshIndicator(
             onRefresh: _refreshData,
