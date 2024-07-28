@@ -1,8 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreenCard extends StatelessWidget {
+  final String title;
+  final String date;
+  final Map<String, String> risks;
+  final Map<String, String> widgets;
+
   const HomeScreenCard({
     super.key,
+    required this.title,
+    required this.date,
+    required this.risks,
+    required this.widgets,
   });
 
   @override
@@ -24,7 +34,7 @@ class HomeScreenCard extends StatelessWidget {
           ],
         ),
         padding: const EdgeInsets.all(16.0),
-        child: const Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -33,12 +43,12 @@ class HomeScreenCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('28°C',
+                    Text(title,
                         style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
                             color: Colors.black)),
-                    Text('Today',
+                    Text(date,
                         style: TextStyle(fontSize: 20, color: Colors.black54)),
                   ],
                 ),
@@ -58,7 +68,7 @@ class HomeScreenCard extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         SizedBox(width: 8),
-                        Text('Moderate', style: TextStyle(fontSize: 14)),
+                        Text(risks['Risk'] ?? 'Moderate', style: TextStyle(fontSize: 14)),
                       ],
                     ),
                     SizedBox(height: 8),
@@ -69,7 +79,7 @@ class HomeScreenCard extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         SizedBox(width: 8),
-                        Text('Low', style: TextStyle(fontSize: 14)),
+                        Text(risks['Forest Fire Ext'] ?? 'Low', style: TextStyle(fontSize: 14)),
                       ],
                     ),
                   ],
@@ -84,7 +94,7 @@ class HomeScreenCard extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         SizedBox(width: 8),
-                        Text('Good', style: TextStyle(fontSize: 14)),
+                        Text(risks['Air Quality'] ?? 'Good', style: TextStyle(fontSize: 14)),
                       ],
                     ),
                     SizedBox(height: 8),
@@ -95,7 +105,7 @@ class HomeScreenCard extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         SizedBox(width: 8),
-                        Text('Optimal', style: TextStyle(fontSize: 14)),
+                        Text(risks['Soil Quality'] ?? 'Optimal', style: TextStyle(fontSize: 14)),
                       ],
                     ),
                     SizedBox(height: 8),
@@ -106,7 +116,7 @@ class HomeScreenCard extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         SizedBox(width: 8),
-                        Text('400ppm', style: TextStyle(fontSize: 14)),
+                        Text(risks['CO2'] ?? '400ppm', style: TextStyle(fontSize: 14)),
                       ],
                     ),
                   ],

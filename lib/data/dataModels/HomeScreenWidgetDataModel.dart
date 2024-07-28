@@ -10,25 +10,22 @@ class HomeScreenWidgetDataModel {
   set setWidgets(Map<String, String> widgets) => _widgets = widgets;
   set setRisks(Map<String, String> risks) => _risks = risks;
 
-  HomeScreenWidgetDataModel();
+  //HomeScreenWidgetDataModel();
 
   HomeScreenWidgetDataModel.fromJson(String json) {
     try {
-      Map<String, dynamic> response = jsonDecode(json);
-
+      Map<String, dynamic> response;
       // gemini cevabı başında bu var
-      json.contains("```json", 0)
-          ? response = jsonDecode(json.substring(7, json.length - 3))
-          : response = jsonDecode(json);
-      if (response.containsKey('widgets') &&
-          response['widgets'] != null &&
-          response['widgets'].isNotEmpty) {
-        print( "response from api wfor widgets: $response['widgets']");
+      if (json.contains("```json")) {
+        response = jsonDecode(json.substring(json.indexOf('{'), json.lastIndexOf('}') + 1));
+      } else {
+        response = jsonDecode(json);
+      }
+
+      if (response.containsKey('widgets') && response['widgets'] != null && response['widgets'].isNotEmpty) {
         _widgets = Map<String, String>.from(response['widgets']);
       }
-      if (response.containsKey('risks') &&
-          response['risks'] != null &&
-          response['risks'].isNotEmpty) {
+      if (response.containsKey('risks') && response['risks'] != null && response['risks'].isNotEmpty) {
         _risks = Map<String, String>.from(response['risks']);
       }
     } catch (e) {

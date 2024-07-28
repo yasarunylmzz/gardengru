@@ -18,6 +18,8 @@ class HomeScreenDataModel {
   get getTitle => _titleForArticle;
   get getWidgetDataModel => _widgetDataModel;
   get getTitleForTop => _titleForTop;
+
+
   set setArticle(String article) => _article = article;
   get getArticle => _article;
 

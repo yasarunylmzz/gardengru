@@ -73,7 +73,6 @@ class MyApp extends StatelessWidget {
     bool isLogged = auth.currentUser != null;
 
     if (isLogged) {
-      //context.read<userRecordProvider>().initLogged();
       return const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: BottomNavScreen(),
