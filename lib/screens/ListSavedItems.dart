@@ -21,15 +21,14 @@ class _ListSavedItemsState extends State<ListSavedItems> {
   @override
   void initState() {
     super.initState();
-    final userProvider =
-        Provider.of<userRecordProvider>(context, listen: false);
-    userProvider.initLogged();
-    userProvider.initNewHomeScreen();
+   // final userProvider =
+   // Provider.of<userRecordProvider>(context, listen: false);
+    //userProvider.initLogged();
   }
 
   Future<void> _refreshData() async {
     final userProvider =
-        Provider.of<userRecordProvider>(context, listen: false);
+    Provider.of<userRecordProvider>(context, listen: false);
     userProvider.setIsInitialized(
         false); // Ensure this method sets _isInitialized to false
     await userProvider.initLogged();
@@ -78,7 +77,7 @@ class _ListSavedItemsState extends State<ListSavedItems> {
                             highlightColor: Colors.grey[100]!,
                             child: ClipRRect(
                               borderRadius:
-                                  const BorderRadius.all(Radius.circular(12)),
+                              const BorderRadius.all(Radius.circular(12)),
                               child: Container(
                                 width: 50,
                                 height: 50,
@@ -215,8 +214,8 @@ class _ListSavedItemsState extends State<ListSavedItems> {
                                     Text(
                                       title != null
                                           ? (title.length > 20
-                                              ? '${title.substring(0, 25)}...'
-                                              : title)
+                                          ? '${title.substring(0, 25)}...'
+                                          : title)
                                           : 'Loading...',
                                       style: const TextStyle(
                                           fontSize: 14,

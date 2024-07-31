@@ -1,22 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gardengru/data/records/userRecord.dart';
+import 'package:flutter/services.dart';
 import 'package:gardengru/data/userRecordProvider.dart';
 import 'package:gardengru/screens/BottomNavScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:gardengru/screens/LoginScreen.dart';
-import 'package:gardengru/screens/ListSavedItems.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+  ));
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
 
   runApp(
     MultiProvider(
@@ -24,7 +25,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => userRecordProvider()),
       ],
       child: RestartWidget(
-        child: MyApp(),
+        child: const MyApp(),
       ),
     ),
   );
@@ -37,7 +38,7 @@ class RestartWidget extends StatefulWidget {
 
   static void restartApp(BuildContext context) {
     final _RestartWidgetState? state =
-    context.findAncestorStateOfType<_RestartWidgetState>();
+        context.findAncestorStateOfType<_RestartWidgetState>();
     state?.restartApp();
   }
 
@@ -64,8 +65,6 @@ class _RestartWidgetState extends State<RestartWidget> {
 }
 
 class MyApp extends StatelessWidget {
-
-
   const MyApp({super.key});
 
   @override
@@ -74,7 +73,6 @@ class MyApp extends StatelessWidget {
     bool isLogged = auth.currentUser != null;
 
     if (isLogged) {
-      //context.read<userRecordProvider>().initLogged();
       return const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: BottomNavScreen(),

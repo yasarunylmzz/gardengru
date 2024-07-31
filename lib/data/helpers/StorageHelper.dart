@@ -1,21 +1,18 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:gardengru/data/records/userRecord.dart';
-import 'package:gardengru/data/userRecordProvider.dart';
 import 'FireStoreHelper.dart';
 import 'package:gardengru/data/dataModels/SavedModelDto.dart';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
 
-class StorageHelper{
+class StorageHelper {
   final storageRef = FirebaseStorage.instance.ref();
   StorageHelper();
   final FireStoreHelper _fireStoreHelper = FireStoreHelper();
 
-
-  Future<bool> DeleteSavedItemFromStorageAndStore(userRecord user, int savedModelIndex) async {
+  Future<bool> DeleteSavedItemFromStorageAndStore(
+      userRecord user, int savedModelIndex) async {
     try {
       if (user.savedItems == null) {
         print("Cannot handle the empty path request");
@@ -46,7 +43,8 @@ class StorageHelper{
         print("Error deleting text file: $e");
       }
 
-      if (await _fireStoreHelper.deleteFileReferenceFromDatabase(user, savedModel.savedAt!)) {
+      if (await _fireStoreHelper.deleteFileReferenceFromDatabase(
+          user, savedModel.savedAt!)) {
         print("File references deleted from database successfully");
         user.savedItems?.removeAt(savedModelIndex);
         return true;
@@ -60,13 +58,12 @@ class StorageHelper{
     }
   }
 
-
-  Future<SavedModel?> UploadSavedFilesToDatabase(userRecord user,
-      File image, String text, String title) async {
+  Future<SavedModel?> UploadSavedFilesToDatabase(
+      userRecord user, File image, String text, String title) async {
     try {
       final prename = DateTime.now().toString();
 
-       final desiredFileName = prename.replaceAll(RegExp(r'\s+'), '');
+      final desiredFileName = prename.replaceAll(RegExp(r'\s+'), '');
 
       final imageRef = storageRef.child('images/$desiredFileName.jpeg');
       final textRef = storageRef.child('texts/$desiredFileName.json');
@@ -94,7 +91,8 @@ class StorageHelper{
       print('JSON data written to: ${file.path}');
 
       // Create metadata with content type for JSON file
-      SettableMetadata metadata = SettableMetadata(contentType: 'application/json');
+      SettableMetadata metadata =
+          SettableMetadata(contentType: 'application/json');
 
       // Upload JSON file with metadata
       await textRef.putFile(file, metadata);
@@ -105,13 +103,10 @@ class StorageHelper{
           await imageRef.getDownloadURL(),
           await textRef.getDownloadURL(),
           'texts/$desiredFileName.json',
-          'images/$desiredFileName.jpeg'
-      );
-
+          'images/$desiredFileName.jpeg');
     } catch (e) {
       print("Error uploading files to storage: $e");
       return null;
     }
   }
-
 }

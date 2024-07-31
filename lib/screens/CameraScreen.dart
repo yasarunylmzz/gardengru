@@ -1,12 +1,7 @@
 // ignore: file_names
-import 'dart:convert';
-import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/services.dart';
-import 'package:gardengru/data/dataModels/SavedModelDto.dart';
-import 'package:gardengru/screens/ListSavedItems.dart';
 import 'package:gardengru/screens/ResponseScreen.dart';
 import 'package:gardengru/services/gemini_api_service.dart';
 import 'dart:io';
@@ -51,7 +46,8 @@ class _CameraScreenState extends State<CameraScreen> {
     });
     try {
       locationData = await locationService.getCurrentLocation();
-      generatedText = await _geminiApiService.generateContentWithImages([img], locationData);
+      generatedText = await _geminiApiService
+          .generateContentWithImages([img], locationData);
       title = await _geminiApiService.generateTitle(generatedText!);
       Navigator.push(
         context,
