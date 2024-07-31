@@ -12,7 +12,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    final userProvider = Provider.of<userRecordProvider>(context, listen: false);
+    final userProvider =
+        Provider.of<userRecordProvider>(context, listen: false);
     if (!userProvider.isHomeScreenInitialized) {
       userProvider.initNewHomeScreen();
     }
@@ -21,17 +22,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Screen'),
-      ),
       body: Consumer<userRecordProvider>(
         builder: (context, provider, child) {
           if (provider.isTopHomeScreenLoading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (provider.homeScreenDataModel == null) {
-            return Center(child: Text('No data available'));
+            return const Center(child: Text('No data available'));
           }
 
           return Padding(
@@ -41,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
@@ -50,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Colors.black.withOpacity(0.1),
                           spreadRadius: 1,
                           blurRadius: 5,
-                          offset: Offset(0, 2),
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
@@ -58,35 +56,46 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          provider.homeScreenDataModel!.getTitleForTop ?? '',
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          provider.homeScreenDataModel!.getTitleForTop ??
+                              'Default Title for Top',
+                          style: const TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Text(
-                          provider.homeScreenDataModel!.getTitle ?? '',
-                          style: TextStyle(fontSize: 18),
+                          provider.homeScreenDataModel!.getTitle ??
+                              'Default Title',
+                          style: const TextStyle(fontSize: 18),
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
-                              child: _buildWidgetBox(provider.homeScreenDataModel!.getWidgetDataModel!.getWidgets),
+                              child: _buildWidgetBox(provider
+                                      .homeScreenDataModel!
+                                      .getWidgetDataModel!
+                                      .getWidgets ??
+                                  {'Default Key': 'Default Value'}),
                             ),
-                            SizedBox(width: 16),
+                            const SizedBox(width: 16),
                             Expanded(
-                              child: _buildRiskBox(provider.homeScreenDataModel!.getWidgetDataModel!.getRisks),
+                              child: _buildRiskBox(provider.homeScreenDataModel!
+                                      .getWidgetDataModel!.getRisks ??
+                                  {'Default Key': 'Default Value'}),
                             ),
                           ],
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Align(
                           alignment: Alignment.centerRight,
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ListSavedItems()),
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ListSavedItems()),
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -95,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: Row(
+                            child: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text("What's saved? "),
@@ -107,26 +116,28 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   provider.isBottomHomeScreenLoading
-                      ? Center(child: CircularProgressIndicator())
+                      ? const Center(child: CircularProgressIndicator())
                       : StreamBuilder<String>(
-                    stream: provider.articleStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Text('Loading article...');
-                      } else if (snapshot.hasError) {
-                        return Text('Error loading article');
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Text('No content available');
-                      } else {
-                        return Text(
-                          snapshot.data!,
-                          style: TextStyle(fontSize: 16),
-                        );
-                      }
-                    },
-                  ),
+                          stream: provider.articleStream,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Text('Loading article...');
+                            } else if (snapshot.hasError) {
+                              return const Text('Error loading article');
+                            } else if (!snapshot.hasData ||
+                                snapshot.data!.isEmpty) {
+                              return const Text('No content available');
+                            } else {
+                              return Text(
+                                snapshot.data!,
+                                style: const TextStyle(fontSize: 16),
+                              );
+                            }
+                          },
+                        ),
                 ],
               ),
             ),
@@ -138,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildWidgetBox(Map<String, String> widgets) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.green.shade100,
         borderRadius: BorderRadius.circular(8),
@@ -150,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: Text(
               '${entry.key}: ${entry.value}',
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           );
         }).toList(),
@@ -160,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildRiskBox(Map<String, String> risks) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.red.shade100,
         borderRadius: BorderRadius.circular(8),
@@ -172,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: Text(
               '${entry.key}: ${entry.value}',
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           );
         }).toList(),

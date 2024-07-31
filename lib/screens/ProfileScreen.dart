@@ -18,9 +18,12 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  TextEditingController _nameController = TextEditingController(text: 'John Doe');
-  TextEditingController _emailController = TextEditingController(text: 'john.doe@example.com');
-  TextEditingController _phoneController = TextEditingController(text: '+1 234 567 8901');
+  TextEditingController _nameController =
+      TextEditingController(text: 'John Doe');
+  TextEditingController _emailController =
+      TextEditingController(text: 'john.doe@example.com');
+  TextEditingController _phoneController =
+      TextEditingController(text: '+1 234 567 8901');
 
   bool _isEditing = false;
 
@@ -49,6 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           'Profile',
           style: GoogleFonts.workSans(
