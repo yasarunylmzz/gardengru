@@ -21,14 +21,14 @@ class _ListSavedItemsState extends State<ListSavedItems> {
   @override
   void initState() {
     super.initState();
-   // final userProvider =
-   // Provider.of<userRecordProvider>(context, listen: false);
+    // final userProvider =
+    // Provider.of<userRecordProvider>(context, listen: false);
     //userProvider.initLogged();
   }
 
   Future<void> _refreshData() async {
     final userProvider =
-    Provider.of<userRecordProvider>(context, listen: false);
+        Provider.of<userRecordProvider>(context, listen: false);
     userProvider.setIsInitialized(
         false); // Ensure this method sets _isInitialized to false
     await userProvider.initLogged();
@@ -39,13 +39,6 @@ class _ListSavedItemsState extends State<ListSavedItems> {
     final StorageHelper storageHelper = StorageHelper();
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Align(
-          alignment: Alignment.centerLeft,
-          child: Text('Home'),
-        ),
-      ),
       body: Consumer<userRecordProvider>(
         builder: (context, usrProvider, child) {
           if (usrProvider.isLoading) {
@@ -77,7 +70,7 @@ class _ListSavedItemsState extends State<ListSavedItems> {
                             highlightColor: Colors.grey[100]!,
                             child: ClipRRect(
                               borderRadius:
-                              const BorderRadius.all(Radius.circular(12)),
+                                  const BorderRadius.all(Radius.circular(12)),
                               child: Container(
                                 width: 50,
                                 height: 50,
@@ -119,9 +112,9 @@ class _ListSavedItemsState extends State<ListSavedItems> {
             );
           }
 
-          List<Map<String, String>?> dataList = usrProvider.listSavedItemScreenData;
+          List<Map<String, String>?> dataList =
+              usrProvider.listSavedItemScreenData;
           userRecord u = usrProvider.user;
-
 
           return RefreshIndicator(
             onRefresh: _refreshData,
@@ -214,8 +207,8 @@ class _ListSavedItemsState extends State<ListSavedItems> {
                                     Text(
                                       title != null
                                           ? (title.length > 20
-                                          ? '${title.substring(0, 25)}...'
-                                          : title)
+                                              ? '${title.substring(0, 25)}...'
+                                              : title)
                                           : 'Loading...',
                                       style: const TextStyle(
                                           fontSize: 14,

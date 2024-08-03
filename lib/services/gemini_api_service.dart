@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:gardengru/data/dataModels/HomeScreenDataModel.dart';
@@ -59,22 +61,28 @@ class GeminiApiService {
     await _initialization; // Ensure initialization is complete
     LocationData locationData = await _locationServices.getCurrentLocation();
     final prompt = _promptData['HomeScreenJsonPrompt'];
-    final response = await _model.generateContent([
-          Content.text(locationData.latitude.toString())
-        ] +
-        [Content.text(locationData.longitude.toString())] +
-        [Content.text(prompt)]);
-    if (response.text == null) {
+    try {
+      final response = await _model.generateContent([
+            Content.text(locationData.latitude.toString())
+          ] +
+          [Content.text(locationData.longitude.toString())] +
+          [Content.text(prompt)]);
+      if (response.text == null) {
+        return null;
+      }
+      print("json response: ${response.text}");
+      return HomeScreenDataModel(response.text!);
+    } catch (e) {
+      print("Error during getHomeScreenData: $e");
       return null;
     }
-    print("json response: ${response.text}");
-    return HomeScreenDataModel(response.text!);
   }
 
   Future<String?> generateHomeScreenArticle() async {
-    await _initialization; // Ensure initialization is complete
-    final prompt = _promptData['HomeScreenArticlePrompt'];
-    final response = await _model.generateContent([Content.text(prompt)]);
-    return response.text;
+    // await _initialization; // Ensure initialization is complete
+    // final prompt = _promptData['HomeScreenArticlePrompt'];
+    // final response = await _model.generateContent([Content.text(prompt)]);
+    // return response.text;
+    return "we planning article here";
   }
 }
