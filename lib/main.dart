@@ -71,7 +71,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< Updated upstream
     FirebaseAuth auth = FirebaseAuth.instance;
     bool isLogged = auth.currentUser != null;
 
@@ -86,11 +85,5 @@ class MyApp extends StatelessWidget {
         home: LoginScreen(),
       );
     }
-=======
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: BottomNavScreen(),
-    );
->>>>>>> Stashed changes
   }
 }

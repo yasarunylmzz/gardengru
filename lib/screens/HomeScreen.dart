@@ -25,7 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Consumer<userRecordProvider>(
-<<<<<<< Updated upstream
         builder: (context, provider, child) {
           if (provider.isTopHomeScreenLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -49,121 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-=======
-        builder: (context, usr, child) {
-          print("home screen");
-          userRecord u = usr.user;
-          print(
-              "home screen watched and first textfilepath is ${u.savedItems?[0].textPath}");
-          //print(u.savedItems?[0].textFileName);
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(8),
-            itemCount: u.savedItems?.length,
-            itemBuilder: (context, index) {
-              final textPath = u.savedItems?[index].textPath ?? '';
-              // Debug: Print the URL
-              print('Fetching data from URL: ${u.savedItems?[index].textPath}');
-
-              return FutureBuilder<List<Map<String, dynamic>>>(
-                future: fetchData(textPath),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else {
-                    final List<Map<String, dynamic>> dataList = snapshot.data!;
-
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: dataList.length,
-                      itemBuilder: (context, index) {
-                        final data = dataList[index];
-                        final title = data['title'] as String?;
-                        final text = data['text'] as String?;
-                        final imagePath = u.savedItems?[index].imagePath;
-
-                        return InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => InfoScreen(
-                                  u: u,
-                                  data: data,
-                                  path: imagePath,
-                                  index: index,
-                                ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(vertical: 8.0),
-                            height: 75,
-                            color: Colors.white,
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(20)),
-                                        child: Image(
-                                          width: 50,
-                                          height: 50,
-                                          fit: BoxFit.fill,
-                                          image: NetworkImage(
-                                            imagePath ??
-                                                'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            title ?? "Loading...",
-                                            style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            text != null
-                                                ? '${text.substring(0, 30)}...'
-                                                : 'Loading...',
-                                            style:
-                                                const TextStyle(fontSize: 14),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  const Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: Color(0xff011928),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                },
-              );
-            },
->>>>>>> Stashed changes
           );
         },
       ),

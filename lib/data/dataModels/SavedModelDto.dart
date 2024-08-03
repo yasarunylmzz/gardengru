@@ -1,8 +1,8 @@
-// ignore_for_file: unnecessary_getters_setters
+
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-<<<<<<< Updated upstream
 class SavedModel{
   String? imageFileName;
   String? textFileName;
@@ -15,60 +15,8 @@ class SavedModel{
   String? get gettextPath => textPath;
   Timestamp? get getsavedAt => savedAt;
 
-=======
-class SavedModel {
-  String? _imageFileName;
->>>>>>> Stashed changes
 
-  String? get imageFileName => _imageFileName;
-
-  set imageFileName(String? value) {
-    _imageFileName = value;
-  }
-
-  String? _textFileName;
-
-  String? get textFileName => _textFileName;
-
-  set textFileName(String? value) {
-    _textFileName = value;
-  }
-
-  String? _imagePath;
-
-  String? get imagePath => _imagePath;
-
-  set imagePath(String? value) {
-    _imagePath = value;
-  }
-
-  String? _textPath;
-
-  String? get textPath => _textPath;
-
-  set textPath(String? value) {
-    _textPath = value;
-  }
-
-  Timestamp? _savedAt;
-
-  Timestamp? get savedAt => _savedAt;
-
-  set savedAt(Timestamp? value) {
-    _savedAt = value;
-  }
-
-  SavedModel(
-      {String? imageFileName,
-      String? textFileName,
-      String? imagePath,
-      String? textPath,
-      Timestamp? savedAt})
-      : _savedAt = savedAt,
-        _textPath = textPath,
-        _imagePath = imagePath,
-        _textFileName = textFileName,
-        _imageFileName = imageFileName;
+  SavedModel({this.imageFileName, this.textFileName, this.imagePath, this.textPath, this.savedAt});
 
 
   factory SavedModel.fromFireStore(DocumentSnapshot doc) {
@@ -90,4 +38,6 @@ class SavedModel {
       'savedAt': savedModel.savedAt,
     };
   }
+
+
 }
