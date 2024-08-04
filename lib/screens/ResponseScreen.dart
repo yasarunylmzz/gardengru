@@ -53,7 +53,7 @@ class _ResponseScreenState extends State<ResponseScreen> {
 
       if (result != null) {
         Provider.of<userRecordProvider>(context, listen: false)
-            .addSavedItemModelAndHomeScreeen(result);
+            .addSavedItemListScreen(result);
       }
 
       final snackBar = SnackBar(

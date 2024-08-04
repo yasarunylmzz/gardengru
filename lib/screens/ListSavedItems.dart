@@ -21,9 +21,7 @@ class _ListSavedItemsState extends State<ListSavedItems> {
   @override
   void initState() {
     super.initState();
-   // final userProvider =
-   // Provider.of<userRecordProvider>(context, listen: false);
-    //userProvider.initLogged();
+    
   }
 
   Future<void> _refreshData() async {
@@ -31,7 +29,7 @@ class _ListSavedItemsState extends State<ListSavedItems> {
     Provider.of<userRecordProvider>(context, listen: false);
     userProvider.setIsInitialized(
         false); // Ensure this method sets _isInitialized to false
-    await userProvider.initLogged();
+    await userProvider.initUserData();
   }
 
   @override

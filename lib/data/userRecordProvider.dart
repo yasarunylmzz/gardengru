@@ -32,65 +32,37 @@ class userRecordProvider extends ChangeNotifier {
   get isHomeScreenInitialized => _isHomeScreenInitialized;
   get isTopHomeScreenLoading => _isTopHomeScreenLoading;
   get isBottomHomeScreenLoading => _isBottomHomeScreenLoading;
-  final StreamController<String> _articleStreamController = StreamController<String>.broadcast();
-  Stream<String> get articleStream => _articleStreamController.stream;
-  Future<void> initNewHomeScreen() async {
+ 
+  Future<void> initHomeScreenWidget() async {
     if (_isHomeScreenInitialized) {
       return;
     }
-
-    // Mark as loading and notify after the current frame is rendered
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isTopHomeScreenLoading = true;
       _isBottomHomeScreenLoading = true;
       notifyListeners();
     });
-
-    print('Fetching home screen data...');
     _homeScreenDataModel = await _ai.getHomeScreenData();
-    print('Home screen data fetched: $_homeScreenDataModel');
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isTopHomeScreenLoading = false;
       notifyListeners();
     });
+      _homeScreenDataModel!.setArticle = "Your daily article will be shown here";
 
-    print('Generating home screen article...');
+  }
+  Future<void>setArticle() async{
     var article = await _ai.generateHomeScreenArticle();
     if (article != null) {
       _homeScreenDataModel!.setArticle = article;
-
-      // Article'ı parça parça yayına alalım
-      for (var part in article.split('\n')) {
-        _articleStreamController.add(part);
-        await Future.delayed(Duration(milliseconds: 500)); // Her parçayı biraz gecikmeyle ekleyelim
-      }
-    }
-    print('Article generated: $article');
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _isBottomHomeScreenLoading = false;
-      _isHomeScreenInitialized = true;
       notifyListeners();
-    });
+    }
+    _homeScreenDataModel!.setArticle = "Opps! Something went wrong";
+    notifyListeners();
 
-    print('Home screen initialization complete.');
-    print('Final home screen data: $_homeScreenDataModel');
-    print('widgets: ${_homeScreenDataModel!.getWidgetDataModel!.getWidgets}');
-    print('risks: ${_homeScreenDataModel!.getWidgetDataModel!.getRisks}');
-    initLoggedSilently();
   }
-
-  @override
-  void dispose() {
-    _articleStreamController.close();
-    super.dispose();
-  }
-
-  ///may an improvement
-  Future<void> initLoggedSilently() async {
-    initNewHomeScreen();
-    //notifyListeners();
+  
+  Future<void> initUserData() async {
+    
     if (_isInitialized) {
       return;
     }
@@ -98,48 +70,19 @@ class userRecordProvider extends ChangeNotifier {
     userRecord? u = await _storeHelper.getUser();
     if (u != null) {
       _user = u;
-      _listSavedItemScreenData = await initHomeScreenTextData();
+      _listSavedItemScreenData = await savedItemsTexts();
       _isLoading = false;
-      //notifyListeners();
+      notifyListeners();
       _isInitialized = true;
-      //notifyListeners();
+      notifyListeners();
       return;
     }
-
     _isLoading = false;
-    //notifyListeners();
-
+    notifyListeners();
     return;
   }
 
-  ///MAY AN IMPROVEMENT
-
-  // Initialize the logged user and home screen data
-  Future<bool> initLogged() async {
-    initNewHomeScreen();
-    //notifyListeners();
-    if (_isInitialized) {
-      return true;
-    }
-    _isLoading = true;
-    userRecord? u = await _storeHelper.getUser();
-    if (u != null) {
-      _user = u;
-      _listSavedItemScreenData = await initHomeScreenTextData();
-      _isLoading = false;
-      notifyListeners();
-      _isInitialized = true;
-      notifyListeners();
-      return true;
-    }
-
-    _isLoading = false;
-    notifyListeners();
-
-    return false;
-  }
-
-  Future<List<Map<String, String>>> initHomeScreenTextData() async {
+  Future<List<Map<String, String>>> savedItemsTexts() async {
     List<Map<String, String>> data = [];
 
     if (_user.getsaved == null) {
@@ -194,7 +137,7 @@ class userRecordProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addSavedItemModelAndHomeScreeen(SavedModel savedModel) async {
+  void addSavedItemListScreen(SavedModel savedModel) async {
     _isLoading = true;
     notifyListeners();
 

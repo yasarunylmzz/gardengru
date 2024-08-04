@@ -8,6 +8,7 @@ import 'location_services.dart';
 
 class GeminiApiService {
   late GenerativeModel _model;
+//  late GenerativeModel _baseModel;
   late Map<String, dynamic> _promptData;
   late Future<void> _initialization;
   LocationService _locationServices = LocationService();
@@ -22,7 +23,8 @@ class GeminiApiService {
     if (apiKey == null) {
       throw Exception('No \$API_KEY environment variable');
     }
-    _model = GenerativeModel(model: 'gemini-1.5-pro', apiKey: apiKey);
+    _model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
+  //  _baseModel = GenerativeModel(model: 'gemini-1.5-flush', apiKey: apiKey);
     final String res = await rootBundle.loadString('assets/prompt.json');
     _promptData = json.decode(res);
   }

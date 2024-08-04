@@ -14,9 +14,18 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     final userProvider =
         Provider.of<userRecordProvider>(context, listen: false);
-    if (!userProvider.isHomeScreenInitialized) {
-      userProvider.initNewHomeScreen();
+        init(userProvider);
+    
+  }
+
+  void init(p) async{
+
+    p.initUserData();
+    if (!p.isHomeScreenInitialized) {
+      await p.initHomeScreenWidget();
     }
+   await p.setArticle();
+ 
   }
 
   @override
@@ -55,17 +64,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          provider.homeScreenDataModel!.getTitleForTop ??
-                              'Default Title for Top',
-                          style: const TextStyle(
+                        const Text(
+                            "what's happening in your garden today?",
+                          style: TextStyle(
                               fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          provider.homeScreenDataModel!.getTitle ??
-                              'Default Title',
-                          style: const TextStyle(fontSize: 18),
+                        const Text(
+                          "Here are some widgets and risks for you to consider:",
+                          style: TextStyle(fontSize: 18),
                         ),
                         const SizedBox(height: 16),
                         Row(
@@ -119,25 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 16),
                   provider.isBottomHomeScreenLoading
                       ? const Center(child: CircularProgressIndicator())
-                      : StreamBuilder<String>(
-                          stream: provider.articleStream,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Text('Loading article...');
-                            } else if (snapshot.hasError) {
-                              return const Text('Error loading article');
-                            } else if (!snapshot.hasData ||
-                                snapshot.data!.isEmpty) {
-                              return const Text('No content available');
-                            } else {
-                              return Text(
-                                snapshot.data!,
-                                style: const TextStyle(fontSize: 16),
-                              );
-                            }
-                          },
-                        ),
+                      : Text(provider.homeScreenDataModel!.getArticle),
                 ],
               ),
             ),
