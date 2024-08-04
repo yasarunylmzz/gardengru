@@ -37,26 +37,34 @@ class userRecordProvider extends ChangeNotifier {
     if (_isHomeScreenInitialized) {
       return;
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _isTopHomeScreenLoading = true;
-      _isBottomHomeScreenLoading = true;
-      notifyListeners();
-    });
+   
+
     _homeScreenDataModel = await _ai.getHomeScreenData();
+    _isTopHomeScreenLoading = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isTopHomeScreenLoading = false;
       notifyListeners();
     });
       _homeScreenDataModel!.setArticle = "Your daily article will be shown here";
+      _isBottomHomeScreenLoading = false;
+      _isHomeScreenInitialized = true;
+      notifyListeners();
 
   }
   Future<void>setArticle() async{
     var article = await _ai.generateHomeScreenArticle();
+    _isBottomHomeScreenLoading = true;
+    notifyListeners();
     if (article != null) {
       _homeScreenDataModel!.setArticle = article;
+      _isBottomHomeScreenLoading = false;
       notifyListeners();
+      return;
     }
+    print("i have a feeling this shit is null");
+    print(article);
     _homeScreenDataModel!.setArticle = "Opps! Something went wrong";
+    _isBottomHomeScreenLoading = false;
     notifyListeners();
 
   }

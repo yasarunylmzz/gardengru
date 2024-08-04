@@ -12,20 +12,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    final userProvider =
-        Provider.of<userRecordProvider>(context, listen: false);
-        init(userProvider);
-    
+    final userProvider = Provider.of<userRecordProvider>(context, listen: false);
+    init(userProvider);
   }
 
-  void init(p) async{
-
-    p.initUserData();
-    if (!p.isHomeScreenInitialized) {
-      await p.initHomeScreenWidget();
+  void init(userRecordProvider provider) async {
+    await provider.initUserData();
+    if (!provider.isHomeScreenInitialized) {
+      await provider.initHomeScreenWidget();
     }
-   await p.setArticle();
- 
+    await provider.setArticle();
   }
 
   @override
@@ -33,14 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Consumer<userRecordProvider>(
         builder: (context, provider, child) {
-          if (provider.isTopHomeScreenLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (provider.homeScreenDataModel == null) {
-            return const Center(child: Text('No data available'));
-          }
-
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
@@ -65,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                            "what's happening in your garden today?",
+                          "What's happening in your garden today?",
                           style: TextStyle(
                               fontSize: 24, fontWeight: FontWeight.bold),
                         ),
@@ -79,16 +67,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
-                              child: _buildWidgetBox(provider
-                                      .homeScreenDataModel!
-                                      .getWidgetDataModel!
-                                      .getWidgets ??
+                              child: _buildWidgetBox(
+                                  provider.homeScreenDataModel?.getWidgetDataModel?.getWidgets ??
                                   {'Default Key': 'Default Value'}),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
-                              child: _buildRiskBox(provider.homeScreenDataModel!
-                                      .getWidgetDataModel!.getRisks ??
+                              child: _buildRiskBox(
+                                  provider.homeScreenDataModel?.getWidgetDataModel?.getRisks ??
                                   {'Default Key': 'Default Value'}),
                             ),
                           ],
@@ -101,8 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ListSavedItems()),
+                                    builder: (context) => const ListSavedItems()),
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -124,9 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  provider.isBottomHomeScreenLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : Text(provider.homeScreenDataModel!.getArticle),
+                  Text(provider.homeScreenDataModel?.getArticle ?? 'Loading...'),
                 ],
               ),
             ),

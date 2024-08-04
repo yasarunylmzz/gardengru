@@ -23,7 +23,8 @@ class GeminiApiService {
     if (apiKey == null) {
       throw Exception('No \$API_KEY environment variable');
     }
-    _model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
+   var safe = [SafetySetting(HarmCategory.dangerousContent, HarmBlockThreshold.low)];
+    _model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey, safetySettings: safe);
   //  _baseModel = GenerativeModel(model: 'gemini-1.5-flush', apiKey: apiKey);
     final String res = await rootBundle.loadString('assets/prompt.json');
     _promptData = json.decode(res);
@@ -77,6 +78,8 @@ class GeminiApiService {
     await _initialization; // Ensure initialization is complete
     final prompt = _promptData['HomeScreenArticlePrompt'];
     final response = await _model.generateContent([Content.text(prompt)]);
+    print("response is ... ");
+    print(response.text);
     return response.text;
   }
 }
