@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gardengru/data/navigationProvider.dart';
 import 'package:gardengru/data/userRecordProvider.dart';
 import 'package:gardengru/screens/BottomNavScreen.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +23,6 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => userRecordProvider()),
-        ChangeNotifierProvider(create: (_) => NavigationProvider()),
       ],
       child: RestartWidget(
         child: const MyApp(),

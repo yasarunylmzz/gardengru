@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:gardengru/data/navigationProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:gardengru/data/userRecordProvider.dart';
+import 'ListSavedItems.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final userProvider =
-        Provider.of<userRecordProvider>(context, listen: false);
-    if (!userProvider.isHomeScreenInitialized) {
-      userProvider.initNewHomeScreen();
+  void initState() {
+    super.initState();
+    final userProvider = Provider.of<userRecordProvider>(context, listen: false);
+    init(userProvider);
+  }
+
+  void init(userRecordProvider provider) async {
+    await provider.initUserData();
+    if (!provider.isHomeScreenInitialized) {
+      await provider.initHomeScreenWidget();
     }
+    await provider.setArticle();
   }
 
   @override
@@ -26,109 +29,92 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Consumer<userRecordProvider>(
         builder: (context, provider, child) {
-          if (provider.isTopHomeScreenLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (provider.homeScreenDataModel == null) {
-            return const Center(child: Text('No data available'));
-          }
-
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildTopSection(provider),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "What's happening in your garden today?",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          "Here are some widgets and risks for you to consider:",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: _buildWidgetBox(
+                                  provider.homeScreenDataModel?.getWidgetDataModel?.getWidgets ??
+                                  {'Default Key': 'Default Value'}),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _buildRiskBox(
+                                  provider.homeScreenDataModel?.getWidgetDataModel?.getRisks ??
+                                  {'Default Key': 'Default Value'}),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ListSavedItems()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text("What's saved? "),
+                                Icon(Icons.arrow_forward),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 16),
-                  provider.isBottomHomeScreenLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : _buildBottomSection(provider),
+                  Text(provider.homeScreenDataModel?.getArticle ?? 'Loading...'),
                 ],
               ),
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildTopSection(userRecordProvider provider) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            provider.homeScreenDataModel!.getTitleForTop ??
-                'Default Title for Top',
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            provider.homeScreenDataModel!.getTitle ?? 'Default Title',
-            style: const TextStyle(fontSize: 18),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: _buildWidgetBox(
-                  provider.homeScreenDataModel!.getWidgetDataModel!
-                          .getWidgets ??
-                      {'Default Key': 'Default Value'},
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildRiskBox(
-                  provider.homeScreenDataModel!.getWidgetDataModel!.getRisks ??
-                      {'Default Key': 'Default Value'},
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Align(
-            alignment: Alignment.centerRight,
-            child: ElevatedButton(
-              onPressed: () {
-                Provider.of<NavigationProvider>(context, listen: false)
-                    .setPageIndex(3);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("What's saved? "),
-                  Icon(Icons.arrow_forward),
-                ],
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -174,26 +160,6 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }).toList(),
       ),
-    );
-  }
-
-  Widget _buildBottomSection(userRecordProvider provider) {
-    return StreamBuilder<String>(
-      stream: provider.articleStream,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text('Loading article...');
-        } else if (snapshot.hasError) {
-          return const Text('Error loading article');
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Text('No content available');
-        } else {
-          return Text(
-            snapshot.data!,
-            style: const TextStyle(fontSize: 16),
-          );
-        }
-      },
     );
   }
 }
